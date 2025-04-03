@@ -12,14 +12,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: const Color(0xFFEFEFEF),
       elevation: 0,
       centerTitle: true,
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.bookmark_border),
-          onPressed: () {
-            // 북마크 기능 (미구현)
-          },
-        ),
-      ],
     );
   }
 
