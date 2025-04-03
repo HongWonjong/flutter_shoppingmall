@@ -12,16 +12,15 @@ class MainPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const CustomAppBar(title: '메인 페이지'),
       body: Column(
         children: [
-          const SizedBox(height: 100),
+          const SizedBox(height: 150),
           Image.network(
             'https://i.imgur.com/baFkWzl.png',
             width: 500, // 원하는 크기로 조절
             height: 250,
           ),
-          const SizedBox(height: 50),
+          const SizedBox(height: 100),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               minimumSize: Size(200, 120),
