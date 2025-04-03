@@ -27,8 +27,8 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
     state = state.where((cartItem) => cartItem.item.id != itemId).toList();
   }
 // 모든 아이템을 카트에서 제거한다. state를 빈 리스트로 초기화한다.
-  void removeAllFromCart(String itemId) {
-    state = state.where((cartItem) => cartItem.item.id != itemId).toList();
+  void removeAllFromCart() {
+    state = [];
   }
   void updateQuantity(String itemId, int newQuantity) {
     final index = state.indexWhere((cartItem) => cartItem.item.id == itemId);
