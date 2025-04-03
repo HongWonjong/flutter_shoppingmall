@@ -37,10 +37,12 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
       }
     }
   }
+
   // 장바구니에서 총액 수량을 계산할 때 사용하는 게터다.
   //state.fold는 리스트의 각 요소를 순회하면서 누적 값을 계산한다. 초기값은 0이고, 각 요소에 대해 누적 값을 계산한다.
   // 여기서 sum은 누적 값이고, cartItem은 현재 처리 중인 카트 아이템이다.
-  int get totalQuantity => state.fold(0, (sum, item) => sum + item.quantity);
+  int get totalQuantity => state.fold(0, (sum, item) => sum + item.quantity);  
+
   double get totalPrice => state.fold(
     0,
         (sum, cartItem) => sum + (cartItem.item.price * cartItem.quantity),
