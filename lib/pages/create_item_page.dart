@@ -134,7 +134,7 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
                   labelText: '상품 설명',
                   border: OutlineInputBorder(),
                 ),
-                maxLines: 8,
+                maxLines: 4,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return '상품 설명을 입력해주세요';
@@ -152,7 +152,7 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
                     backgroundColor: Color(0xFF4D81F0),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(15),
                     )
                   ),
                   child: const Text('등록하기',
