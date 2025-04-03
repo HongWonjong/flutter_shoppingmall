@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:io';
 import '../components/custom_app_bar.dart';
 import '../providers/cart_provider.dart';
 
@@ -21,8 +22,8 @@ class CartItemPage extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final cartItem = cartItems[index];
                 return ListTile(
-                  leading: cartItem.item.imageUrl != null
-                      ? Image.network(cartItem.item.imageUrl!, width: 50, height: 50, fit: BoxFit.cover)
+                  leading: cartItem.item.imageFile != null
+                      ? Image.file(cartItem.item.imageFile!, width: 50, height: 50, fit: BoxFit.cover)
                       : const Icon(Icons.image, size: 50),
                   title: Text(cartItem.item.name),
                   subtitle: Text('가격: \$${cartItem.item.price * cartItem.quantity}'),

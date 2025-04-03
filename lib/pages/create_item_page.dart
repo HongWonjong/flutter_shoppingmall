@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../components/custom_app_bar.dart';
 import '../providers/item_provider.dart';
 
@@ -15,17 +17,24 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
   final _nameController = TextEditingController();
   final _priceController = TextEditingController();
   final _descriptionController = TextEditingController();
-  final _imageUrlController = TextEditingController();
-  final _stockController = TextEditingController();
+  File? _selectedImage;
 
   @override
   void dispose() {
     _nameController.dispose();
     _priceController.dispose();
     _descriptionController.dispose();
-    _imageUrlController.dispose();
-    _stockController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
   }
 
   void _submit() {
@@ -33,15 +42,12 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
       final name = _nameController.text;
       final price = double.parse(_priceController.text);
       final description = _descriptionController.text;
-      final stock = int.parse(_stockController.text);
-      final imageUrl = _imageUrlController.text.isNotEmpty ? _imageUrlController.text : null;
 
       ref.read(itemListProvider.notifier).addItem(
         name,
         price,
         description,
-        stock,
-        imageUrl,
+        _selectedImage,
       );
 
       Navigator.pop(context);
@@ -58,10 +64,15 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
           key: _formKey,
           child: ListView(
             children: [
-              Container(
-                height: 150,
-                color: Colors.grey[300],
-                child: const Center(child: Text('이미지 선택')),
+              GestureDetector(
+                onTap: _pickImage,
+                child: Container(
+                  height: 150,
+                  color: Colors.grey[300],
+                  child: _selectedImage != null
+                      ? Image.file(_selectedImage!, fit: BoxFit.cover, width: double.infinity)
+                      : const Center(child: Text('이미지 선택')),
+                ),
               ),
               const SizedBox(height: 16),
               TextFormField(
@@ -109,32 +120,6 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
                   }
                   return null;
                 },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _stockController,
-                decoration: const InputDecoration(
-                  labelText: '재고 수량',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '재고 수량을 입력해주세요';
-                  }
-                  if (int.tryParse(value) == null) {
-                    return '유효한 숫자를 입력해주세요';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _imageUrlController,
-                decoration: const InputDecoration(
-                  labelText: '이미지 URL (선택)',
-                  border: OutlineInputBorder(),
-                ),
               ),
               const SizedBox(height: 32),
               Align(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:io';
 import '../components/custom_app_bar.dart';
 import '../providers/item_provider.dart';
 import 'item_detail_page.dart';
@@ -20,8 +21,8 @@ class ShoppingPage extends ConsumerWidget {
           final item = items[index];
           return Card(
             child: ListTile(
-              leading: item.imageUrl != null
-                  ? Image.network(item.imageUrl!, width: 50, height: 50, fit: BoxFit.cover)
+              leading: item.imageFile != null
+                  ? Image.file(item.imageFile!, width: 50, height: 50, fit: BoxFit.cover)
                   : const Icon(Icons.image, size: 50),
               title: Text(item.name),
               subtitle: Text('가격: \$${item.price}'),
