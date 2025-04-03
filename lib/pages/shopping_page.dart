@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:io';
 import '../components/custom_app_bar.dart';
 import '../providers/item_provider.dart';
 import 'item_detail_page.dart';
