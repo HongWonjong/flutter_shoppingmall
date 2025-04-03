@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../components/custom_app_bar.dart';
+import '../components/promote_slider.dart'; // PromoSlider 임포트
 import 'create_item_page.dart';
 import 'shopping_page.dart';
 import 'cart_item_page.dart';
@@ -16,6 +17,8 @@ class MainPage extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const PromoSlider(), // PromoSlider 컴포넌트 사용
+            const SizedBox(height: 80),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
