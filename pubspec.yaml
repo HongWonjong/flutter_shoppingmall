@@ -12,6 +12,7 @@ environment:
 dependencies:
   flutter_riverpod: ^2.6.1
   image_picker: ^1.1.2
+  image_picker_web: ^4.0.0
   flutter:
     sdk: flutter
 
