@@ -31,18 +31,21 @@ class CartItemPage extends ConsumerWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
+                        icon: const Icon(Icons.add),
+                        onPressed: () {
+                          ref.read(cartProvider.notifier).updateQuantity(
+                            cartItem.item.id,
+                            cartItem.quantity + 1,
+                          );
+                        },
+                      ),
+                      IconButton(
                         icon: const Icon(Icons.remove),
                         onPressed: () {
                           ref.read(cartProvider.notifier).updateQuantity(
                             cartItem.item.id,
                             cartItem.quantity - 1,
                           );
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.remove_shopping_cart),
-                        onPressed: () {
-                          ref.read(cartProvider.notifier).removeFromCart(cartItem.item.id);
                         },
                       ),
                     ],
