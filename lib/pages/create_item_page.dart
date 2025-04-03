@@ -34,10 +34,9 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null && mounted) {
       setState(() {
-      _selectedImage = File(pickedFile.path);
+        _selectedImage = File(pickedFile.path);
       });
     }
-
   }
 
   void _submit() {
@@ -47,13 +46,9 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
       final price = double.parse(_priceController.text);
       final description = _descriptionController.text;
 
-      ref.read(itemListProvider.notifier).addItem(
-        name,
-        companyName,
-        price,
-        description,
-        _selectedImage,
-      );
+      ref
+          .read(itemListProvider.notifier)
+          .addItem(name, companyName, price, description, _selectedImage);
 
       Navigator.pop(context);
     }
@@ -64,101 +59,65 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
     return Scaffold(
       appBar: const CustomAppBar(title: '상품 등록'),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Form(
           key: _formKey,
-          child: ListView(
+          child: Column(
             children: [
               GestureDetector(
                 onTap: _pickImage,
                 child: Container(
-                  margin: EdgeInsets.fromLTRB(30, 15, 30, 5),
                   height: 200,
-                  color: Colors.grey[300],
-                  child: _selectedImage != null
-                      ? Image.file(_selectedImage!, fit: BoxFit.cover, width: double.infinity)
-                      : const Center(child: Text('이미지 선택')),
+                  margin: EdgeInsets.only(top: 5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.grey[300],
+                  ),
+                  child:
+                      _selectedImage != null
+                          ? Image.file(
+                            _selectedImage!,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          )
+                          : const Center(child: Text('이미지 선택')),
                 ),
               ),
               const SizedBox(height: 16),
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: '상품이름',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '상품 이름을 입력해주세요';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _companyNameController,
-                decoration: const InputDecoration(
-                  labelText: '회사명',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '회사명을 입력해주세요';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _priceController,
-                decoration: const InputDecoration(
-                  labelText: 'Cost 원',
-                  border: OutlineInputBorder(),
-                ),
+              _buildTextField(_nameController, '상품명', '상품명을 입력해주세요'),
+              const SizedBox(height: 20),
+              _buildTextField(_companyNameController, '회사명', '회사명을 입력해주세요'),
+              const SizedBox(height: 20),
+              _buildTextField(
+                _priceController,
+                '가격',
+                '가격을 입력해주세요',
                 keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '가격을 입력해주세요';
-                  }
-                  if (double.tryParse(value) == null) {
-                    return '유효한 숫자를 입력해주세요';
-                  }
-                  return null;
-                },
+                isNumeric: true
               ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(
-                  alignLabelWithHint: true,
-                  labelText: '상품 설명',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 8,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '상품 설명을 입력해주세요';
-                  }
-                  return null;
-                },
+              const SizedBox(height: 20),
+              _buildTextField(
+                _descriptionController,
+                '상품 설명',
+                '상품 설명을 입력해주세요',
+                maxLines: 4,
               ),
               const SizedBox(height: 32),
               Align(
-                alignment: Alignment.bottomRight,
+                alignment: Alignment.bottomCenter,
                 child: ElevatedButton(
                   onPressed: _submit,
                   style: ElevatedButton.styleFrom(
-                    minimumSize: Size(110, 56),
+                    minimumSize: Size(double.infinity, 56),
                     backgroundColor: Color(0xFF4D81F0),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    )
-                  ),
-                  child: const Text('등록하기',
-                    style: TextStyle(
-                      fontSize: 20
+                      borderRadius: BorderRadius.circular(15),
                     ),
+                  ),
+                  child: const Text(
+                    '등록하기',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -166,6 +125,35 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label,
+    String errorText, {
+    int maxLines = 1,
+    TextInputType keyboardType = TextInputType.text,
+    bool isNumeric = false, // 숫자인지 검사 여부 추가
+  }) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        alignLabelWithHint: true,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+      maxLines: maxLines,
+      keyboardType: keyboardType,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return errorText;
+        }
+        if (isNumeric && double.tryParse(value) == null) {
+          return '숫자만 입력 가능합니다';
+        }
+        return null;
+      },
     );
   }
 }
