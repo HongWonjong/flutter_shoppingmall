@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../components/custom_app_bar.dart';
@@ -9,6 +10,7 @@ class CartItemPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cartItems = ref.watch(cartProvider);
+    
 
     return Scaffold(
       appBar: const CustomAppBar(title: '장바구니'),
@@ -53,11 +55,43 @@ class CartItemPage extends ConsumerWidget {
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              '총액: \$${ref.watch(cartProvider.notifier).totalPrice.toStringAsFixed(2)}',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          
+          BottomAppBar(
+            color: const Color(0xFFEFEFEF),
+            elevation: 0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '총액: \$${ref.watch(cartProvider.notifier).totalPrice.toStringAsFixed(2)}',
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  ElevatedButton(onPressed: () {
+                    showCupertinoDialog(context: context, builder: (context){
+                      return CupertinoAlertDialog(
+                        title: Text('구매하시겠습니까?'),
+                        content: Text('${ref.watch(cartProvider.notifier).totalQuantity}개 총합 ${ref.watch(cartProvider.notifier).totalPrice.toStringAsFixed(2)}원'),
+                        actions: [CupertinoDialogAction(
+                          isDestructiveAction: true,
+                          onPressed: (){Navigator.of(context).pop();
+                          },
+                          child: Text('취소'),
+                        ),
+                        CupertinoDialogAction(
+                          isDefaultAction: true,
+                          onPressed: (){},
+                          child: Text('구매'),
+                        )],
+                      );});
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF4D81F0),
+                    foregroundColor: Colors.white
+                  ),child: const Text('구매하기'),),
+                ],
+              ),
             ),
           ),
         ],
