@@ -3,6 +3,7 @@ import 'dart:io';
 class Item {
   final String id;
   final String name;
+  final String company_name;
   final double price;
   final String description;
   final File? imageFile; // 업로드된 이미지 파일
@@ -10,6 +11,7 @@ class Item {
   Item({
     required this.id,
     required this.name,
+    required this.company_name,
     required this.price,
     required this.description,
     this.imageFile,
