@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../components/custom_app_bar.dart';
@@ -47,7 +48,28 @@ class ItemDetailPage extends ConsumerWidget {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                ref.read(cartProvider.notifier).addToCart(item, 1);
+                showCupertinoDialog(context: context, builder: (context){
+                  return CupertinoAlertDialog(
+                    title: Text('장바구니에 추가하시겠습니까?'),
+                    actions: [
+                      CupertinoDialogAction(
+                        isDestructiveAction: true,
+                        onPressed: (){
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('취소'),
+                      ),
+                      CupertinoDialogAction(
+                        isDefaultAction: true,
+                        onPressed: () {
+                          ref.read(cartProvider.notifier).addToCart(item, 1);
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('추가'),
+                      )
+                    ]
+                  );
+                });
               },
               child: const Text('장바구니에 추가'),
             ),
