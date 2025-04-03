@@ -11,42 +11,83 @@ class MainPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: const CustomAppBar(title: '메인 페이지'),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CreateItemPage()),
-                );
-              },
-              child: const Text('아이템 등록 페이지로 이동'),
+      body: Column(
+        children: [
+          const SizedBox(height: 100),
+          Image.network(
+            'https://i.imgur.com/baFkWzl.png',
+            width: 500, // 원하는 크기로 조절
+            height: 250,
+          ),
+          const SizedBox(height: 50),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              minimumSize: Size(200, 120),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              backgroundColor: Color(0xff4D81F0),
+              foregroundColor: Colors.white,
+              iconSize: 80,
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const ShoppingPage()),
-                );
-              },
-              child: const Text('쇼핑 페이지로 이동'),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CartItemPage()),
-                );
-              },
-              child: const Text('장바구니 페이지로 이동'),
-            ),
-          ],
-        ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ShoppingPage()),
+              );
+            },
+            child: const Icon(Icons.storefront),
+          ),
+          const SizedBox(height: 5,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(95, 40),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  backgroundColor: Colors.white,
+                  foregroundColor: Color(0xff4D81F0),
+                  iconSize: 30,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CartItemPage(),
+                    ),
+                  );
+                },
+                child: const Icon(Icons.shopping_cart),
+              ),
+              const SizedBox(width: 10,),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(95, 40),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  backgroundColor: Color(0xFFEFEFEF),
+                  foregroundColor: Colors.grey[700],
+                  iconSize: 30,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CreateItemPage(),
+                    ),
+                  );
+                },
+                child: const Icon(Icons.add_business),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
