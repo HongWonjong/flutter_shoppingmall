@@ -30,8 +30,8 @@ class ItemDetailPage extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            item.imageUrl != null
-                ? Image.network(item.imageUrl!, height: 200, width: double.infinity, fit: BoxFit.cover)
+            item.imageFile != null
+                ? Image.file(item.imageFile!, height: 200, width: double.infinity, fit: BoxFit.cover)
                 : Container(
               height: 200,
               color: Colors.grey[300],
