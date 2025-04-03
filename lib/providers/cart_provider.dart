@@ -35,6 +35,8 @@ class CartNotifier extends StateNotifier<List<CartItem>> {
     }
   }
 
+  int get totalQuantity => state.fold(0, (sum, item) => sum + item.quantity);
+  
   double get totalPrice => state.fold(
     0,
         (sum, cartItem) => sum + (cartItem.item.price * cartItem.quantity),
