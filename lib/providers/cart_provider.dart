@@ -7,7 +7,26 @@ final cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>((ref) {
 });
 
 class CartNotifier extends StateNotifier<List<CartItem>> {
-  CartNotifier() : super([]);
+  CartNotifier() : super([
+    CartItem(
+      item: Item(
+        id: '1',
+        name: '바게트',
+        price: 3.5,
+        description: '신선한 프랑스식 바게트',
+      ),
+      quantity: 1,
+    ),
+    CartItem(
+      item: Item(
+        id: '2',
+        name: '스팸',
+        price: 2.0,
+        description: '클래식 스팸 통조림',
+      ),
+      quantity: 1,
+    ),
+  ]);
 
   void addToCart(Item item, int quantity) {
     final existingIndex = state.indexWhere((cartItem) => cartItem.item.id == item.id);
