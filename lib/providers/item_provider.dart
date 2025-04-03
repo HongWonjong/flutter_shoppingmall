@@ -8,6 +8,7 @@ final itemListProvider = StateNotifierProvider<ItemListNotifier, List<Item>>((re
 
 class ItemListNotifier extends StateNotifier<List<Item>> {
   ItemListNotifier() : super([
+    //기초적인 아이템 리스트를 super 매개변수로 전달한다.
     Item(
       id: '1',
       name: '개발자(무료)',
@@ -25,7 +26,7 @@ class ItemListNotifier extends StateNotifier<List<Item>> {
       imageFile: null, // 초기에는 이미지 없음
     ),
   ]);
-
+// 아이템 등록 페이지에서 사용하며, 새로운 아이템을 아이템 리스트에 추가한다.
   void addItem(String name, String company_name, double price, String description, File? imageFile) {
     final newItem = Item(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -35,9 +36,12 @@ class ItemListNotifier extends StateNotifier<List<Item>> {
       description: description,
       imageFile: imageFile,
     );
-    state = [...state, newItem];
-  }
 
+    state = [...state, newItem];
+    // ...state의 의미는 현재 state의 모든 요소를 새로운 리스트에 복사한다는 의미이다.
+    // 그리고 여기에 추가로 새로운 아이템 newItem객체를 추가한다.
+  }
+// 선택한 id의 아이템을 아이템 리스트에서 제거한다.
   void removeItem(String id) {
     state = state.where((item) => item.id != id).toList();
   }
