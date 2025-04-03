@@ -9,14 +9,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(title),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.bookmark_border),
-          onPressed: () {
-            // 북마크 기능 (미구현)
-          },
-        ),
-      ],
     );
   }
 
