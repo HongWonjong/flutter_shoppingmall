@@ -48,9 +48,6 @@ class ItemDetailPage extends ConsumerWidget {
             ElevatedButton(
               onPressed: () {
                 ref.read(cartProvider.notifier).addToCart(item, 1);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('장바구니에 추가되었습니다')),
-                );
               },
               child: const Text('장바구니에 추가'),
             ),

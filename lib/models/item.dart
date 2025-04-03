@@ -6,7 +6,7 @@ class Item {
   final String company_name;
   final double price;
   final String description;
-  final File? imageFile; // 업로드된 이미지 파일
+  final File? imageFile;
 
   Item({
     required this.id,
