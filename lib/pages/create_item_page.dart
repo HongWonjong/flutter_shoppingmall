@@ -32,11 +32,12 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
   Future<void> _pickImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
+    if (pickedFile != null && mounted) {
       setState(() {
-        _selectedImage = File(pickedFile.path);
+      _selectedImage = File(pickedFile.path);
       });
     }
+
   }
 
   void _submit() {
@@ -71,7 +72,8 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
               GestureDetector(
                 onTap: _pickImage,
                 child: Container(
-                  height: 150,
+                  margin: EdgeInsets.fromLTRB(30, 15, 30, 5),
+                  height: 200,
                   color: Colors.grey[300],
                   child: _selectedImage != null
                       ? Image.file(_selectedImage!, fit: BoxFit.cover, width: double.infinity)
@@ -128,10 +130,11 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
               TextFormField(
                 controller: _descriptionController,
                 decoration: const InputDecoration(
+                  alignLabelWithHint: true,
                   labelText: '상품 설명',
                   border: OutlineInputBorder(),
                 ),
-                maxLines: 3,
+                maxLines: 8,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return '상품 설명을 입력해주세요';
@@ -141,14 +144,22 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
               ),
               const SizedBox(height: 32),
               Align(
-                alignment: Alignment.centerRight,
+                alignment: Alignment.bottomRight,
                 child: ElevatedButton(
                   onPressed: _submit,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple[100],
-                    foregroundColor: Colors.black,
+                    minimumSize: Size(110, 56),
+                    backgroundColor: Color(0xFF4D81F0),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    )
                   ),
-                  child: const Text('등록하기'),
+                  child: const Text('등록하기',
+                    style: TextStyle(
+                      fontSize: 20
+                    ),
+                  ),
                 ),
               ),
             ],
