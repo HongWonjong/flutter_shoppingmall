@@ -18,6 +18,7 @@ class ItemDetailPage extends ConsumerWidget {
       orElse: () => Item(
         id: '',
         name: '아이템 없음',
+        company_name: "이름 없음",
         price: 0.0,
         description: '해당 아이템을 찾을 수 없습니다.',
       ),

@@ -15,6 +15,7 @@ class CreateItemPage extends ConsumerStatefulWidget {
 class _CreateItemPageState extends ConsumerState<CreateItemPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+  final _companyNameController = TextEditingController();
   final _priceController = TextEditingController();
   final _descriptionController = TextEditingController();
   File? _selectedImage;
@@ -22,6 +23,7 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
   @override
   void dispose() {
     _nameController.dispose();
+    _companyNameController.dispose();
     _priceController.dispose();
     _descriptionController.dispose();
     super.dispose();
@@ -40,11 +42,13 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       final name = _nameController.text;
+      final companyName = _companyNameController.text;
       final price = double.parse(_priceController.text);
       final description = _descriptionController.text;
 
       ref.read(itemListProvider.notifier).addItem(
         name,
+        companyName,
         price,
         description,
         _selectedImage,
@@ -84,6 +88,20 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return '상품 이름을 입력해주세요';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: _companyNameController,
+                decoration: const InputDecoration(
+                  labelText: '회사명',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '회사명을 입력해주세요';
                   }
                   return null;
                 },
