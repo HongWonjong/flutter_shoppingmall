@@ -7,74 +7,144 @@ class PromoteSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200, // 배너 높이 설정
-      child: PageView(
-        controller: PageController(viewportFraction: 0.9),
-        children: [
-          _buildPromoBanner(
-            context,
-            '특별 할인전',
-            '최대 50% 할인!',
-            Colors.blue.shade100,
-          ),
-          _buildPromoBanner(
-            context,
-            '추천 상품',
-            '지금 뜨는 아이템',
-            Colors.green.shade100,
-          ),
-          _buildPromoBanner(
-            context,
-            '한정 세일',
-            '오늘만 특가!',
-            Colors.red.shade100,
-          ),
-        ],
+      height: 220, // 약간 더 높여서 여유롭게
+      child: PageView.builder(
+        controller: PageController(viewportFraction: 0.93),
+        itemCount: 4, // 배너 개수
+        itemBuilder: (context, index) {
+          return _buildPromoBanner(context, index);
+        },
       ),
     );
   }
 
-  Widget _buildPromoBanner(BuildContext context, String title, String subtitle, Color color) {
+  Widget _buildPromoBanner(BuildContext context, int index) {
+    // 배너별 데이터 정의
+    final List<Map<String, dynamic>> banners = [
+      {
+        'title': '특별 할인전',
+        'subtitle': '최대 50% 할인!',
+        'gradient': LinearGradient(
+          colors: [Colors.blue.shade400, Colors.blue.shade900],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        'icon': Icons.discount,
+      },
+      {
+        'title': '추천 상품',
+        'subtitle': '지금 뜨는 아이템',
+        'gradient': LinearGradient(
+          colors: [Colors.green.shade400, Colors.teal.shade700],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        'icon': Icons.trending_up,
+      },
+      {
+        'title': '한정 세일',
+        'subtitle': '오늘만 특가!',
+        'gradient': LinearGradient(
+          colors: [Colors.red.shade400, Colors.deepOrange.shade700],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        'icon': Icons.timer,
+      },
+      {
+        'title': '개발자 데려가기',
+        'subtitle': '1개월 사용 무료!',
+        'gradient': LinearGradient(
+          colors: [Colors.blueAccent.shade400, Colors.deepOrange.shade700],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        'icon': Icons.accessibility_sharp,
+      },
+    ];
+
+    final banner = banners[index];
+
     return GestureDetector(
       onTap: () {
-        // 배너 클릭 시 ShoppingPage로 이동
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const ShoppingPage()),
         );
       },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(12),
+          gradient: banner['gradient'],
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 3,
+              blurRadius: 10,
+              offset: const Offset(0, 5),
             ),
           ],
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+        child: Stack(
+          children: [
+            // 콘텐츠
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    banner['icon'],
+                    size: 40,
+                    color: Colors.white.withOpacity(0.9),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    banner['title'],
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      letterSpacing: 1.2,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black45,
+                          offset: Offset(2, 2),
+                          blurRadius: 4,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    banner['subtitle'],
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.white.withOpacity(0.9),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // CTA 버튼 추가
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Text(
+                      '지금 확인하기',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                subtitle,
-                style: const TextStyle(fontSize: 16),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
