@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_shippingmall/pages/payment_page.dart';
@@ -13,6 +12,11 @@ class CartItemPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final cartItems = ref.watch(cartProvider);
 
+    DateTime tomorrow = DateTime.now().add(Duration(days: 1)); // 내일 날짜
+    List<String> weekDays = ["월", "화", "수", "목", "금", "토", "일"];
+
+    String tomorrowWeekday = weekDays[tomorrow.weekday - 1];
+
     return Scaffold(
       appBar: const CustomAppBar(title: '장바구니'),
       body: Column(
@@ -23,119 +27,125 @@ class CartItemPage extends ConsumerWidget {
               itemCount: cartItems.length,
               itemBuilder: (context, index) {
                 final cartItem = cartItems[index];
-                return Column(
-                  children: [
-                    ListTile(
-                      //'${NumberFormat("#,###", "ko_KR").format(cartItem.item.price * cartItem.quantity)}원'
-                      leading:
-                          cartItem.item.imageFile != null
-                              ? Image.file(
-                                cartItem.item.imageFile!,
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              )
-                              : const Icon(Icons.image, size: 50),
-                      title: Text(cartItem.item.name),
-                      subtitle: Text(
-                        '가격: ${NumberFormat("#,###", "ko_KR").format(cartItem.item.price * cartItem.quantity)}원',
+                return Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Row(
+                    children: [
+                      cartItem.item.imageFile != null
+                          ? Image.file(
+                            cartItem.item.imageFile!,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          )
+                          : const Icon(Icons.image, size: 100),
+                      SizedBox(width: 10),
+                      SizedBox(
+                        width: 180,
+                        height: 100,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              cartItem.item.name,
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            Text(
+                              cartItem.item.description,
+                              style: TextStyle(color: Colors.grey[700]),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              '내일($tomorrowWeekday) 도착 보장',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.green[800],
+                              ),
+                            ),
+                            Text(
+                              '${NumberFormat("#,###", "ko_KR").format(cartItem.item.price * cartItem.quantity)}원',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
+                      Spacer(),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          IconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: () {
+                          GestureDetector(
+                            onTap: () {
                               ref
-                                  .read(cartProvider.notifier)
-                                  .updateQuantity(
-                                    cartItem.item.id,
-                                    cartItem.quantity + 1,
-                                  );
+                                  .watch(cartProvider.notifier)
+                                  .removeFromCart(cartItem.item.id);
                             },
+                            child: Icon(Icons.close),
                           ),
-                          Text(
-                            '${cartItem.quantity}',
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.remove),
-                            onPressed: () {
-                              ref
-                                  .read(cartProvider.notifier)
-                                  .updateQuantity(
-                                    cartItem.item.id,
-                                    cartItem.quantity - 1,
-                                  );
-                            },
+                          SizedBox(height: 40),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.black),
+                            ),
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    ref
+                                        .watch(cartProvider.notifier)
+                                        .updateQuantity(
+                                          cartItem.item.id,
+                                          cartItem.quantity - 1,
+                                        );
+                                  },
+                                  child: Icon(Icons.remove, size: 30),
+                                ),
+                                Text('${cartItem.quantity}'),
+                                GestureDetector(
+                                  onTap: () {
+                                    ref
+                                        .watch(cartProvider.notifier)
+                                        .updateQuantity(
+                                          cartItem.item.id,
+                                          cartItem.quantity + 1,
+                                        );
+                                  },
+                                  child: Icon(Icons.add, size: 30),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                    const Divider(height: 1, thickness: 1),
-                  ],
+                    ],
+                  ),
                 );
               },
             ),
           ),
-          BottomAppBar(
-            color: const Color(0xFFEFEFEF),
-            elevation: 0,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '개수:${ref.watch(cartProvider.notifier).totalQuantity}개   총액: ${NumberFormat("#,###", "ko_KR").format(ref.watch(cartProvider.notifier).totalPrice)}원',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      showCupertinoDialog(
-                        context: context,
-                        builder: (context) {
-                          return CupertinoAlertDialog(
-                            title: Text('구매하시겠습니까?'),
-                            content: Text(
-                              '${ref.watch(cartProvider.notifier).totalQuantity}개 총합 ${NumberFormat("#,###", "ko_KR").format(ref.watch(cartProvider.notifier).totalPrice)}원',
-                            ),
-                            actions: [
-                              CupertinoDialogAction(
-                                isDestructiveAction: true,
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('취소'),
-                              ),
-                              CupertinoDialogAction(
-                                isDefaultAction: true,
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  _goToPayment(
-                                    context,
-                                  ); 
 
-                                  child:
-                                  Text("결제하기");
-                                },
-                                child: Text('구매'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF4D81F0),
-                      foregroundColor: Colors.white,
-                    ),
-                    child: const Text('구매하기'),
-                  ),
-                ],
+          Container(
+            padding: EdgeInsets.all(16),
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                _goToPayment(context); // 결제 완료 팝업 띄우기
+              },
+              child: Text(
+                "총 ${ref.watch(cartProvider.notifier).totalQuantity}개 상품 구매하기",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                padding: EdgeInsets.symmetric(vertical: 16),
               ),
             ),
           ),
@@ -167,7 +177,8 @@ class CartItemPage extends ConsumerWidget {
             "결제 페이지에서 결제를 진행합니다.",
             style: TextStyle(fontSize: 14, color: Colors.grey),
           ),
-          actions: [TextButton(
+          actions: [
+            TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -177,12 +188,13 @@ class CartItemPage extends ConsumerWidget {
               onPressed: () {
                 Navigator.pop(context);
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const PaymentPage()), // 장바구니로 이동
+                  MaterialPageRoute(
+                    builder: (context) => const PaymentPage(),
+                  ), // 장바구니로 이동
                 );
               },
               child: Text("확인", style: TextStyle(color: Colors.black)),
             ),
-           
           ],
         );
       },
