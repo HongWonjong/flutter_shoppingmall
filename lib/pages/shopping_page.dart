@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_shippingmall/function/get_item_type_text.dart';
 import 'package:flutter_shippingmall/pages/cart_item_page.dart';
 import '../components/custom_app_bar.dart';
 import '../providers/item_provider.dart';
@@ -92,6 +93,7 @@ class ShoppingPage extends ConsumerWidget {
                         Text(item.company_name, style: TextStyle(fontSize: 12)),
                         SizedBox(height: 10),
                         Text(item.description),
+                        Text(getItemTypeText(item)),
                       ],
                     ),
                   ),
