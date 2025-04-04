@@ -12,6 +12,7 @@ environment:
 dependencies:
   flutter_riverpod: ^2.6.1
   image_picker: ^1.1.2
+  path_provider: ^2.1.3
   image_picker_web: ^4.0.0
   flutter:
     sdk: flutter
@@ -29,6 +30,13 @@ dev_dependencies:
 
 
 flutter:
+  assets:
+    - assets/developer.png
+    - assets/iberico_pork.png
+    - assets/yogurt.png
+    - assets/cheese_hamburger.png
+    - assets/cream_bread.png
+
 
 
   uses-material-design: true
