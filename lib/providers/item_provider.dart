@@ -61,6 +61,42 @@ class ItemListNotifier extends StateNotifier<List<Item>> {
         imageFile: await _assetToFile('assets/cream_bread.png'),
         item_type: ItemType.food,
       ),
+      Item(
+        id: '6',
+        name: 'LG Dios 냉장고',
+        company_name: "LG",
+        price: 1300000,
+        description: '효율적인 냉방 기능을 탑재한 신형 냉장고',
+        imageFile: await _assetToFile('assets/lg_dios_refrigerator.png'),
+        item_type: ItemType.appliance,
+      ),
+      Item(
+        id: '7',
+        name: '엘지 안마의자',
+        company_name: "LG",
+        price: 1400000,
+        description: '효도의 최첨단',
+        imageFile: await _assetToFile('assets/lg_massage_chair.png'),
+        item_type: ItemType.appliance,
+      ),
+      Item(
+        id: '8',
+        name: '마크 앤 로나 집업 후드',
+        company_name: "MARK & LONA",
+        price: 780000,
+        description: '고급진 안감과 고급진 아무튼 무언가',
+        imageFile: await _assetToFile('assets/mark_and_lona.png'),
+        item_type: ItemType.clothing,
+      ),
+      Item(
+        id: '9',
+        name: '무지 후드티',
+        company_name: "보세",
+        price: 25000,
+        description: '단색의 후드 티',
+        imageFile: await _assetToFile('assets/muji_hood.png'),
+        item_type: ItemType.clothing,
+      ),
     ];
   }
 
