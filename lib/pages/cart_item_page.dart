@@ -89,27 +89,10 @@ class CartItemPage extends ConsumerWidget {
                           isDefaultAction: true,
                           onPressed: (){
                             Navigator.of(context).pop();
-                            showCupertinoDialog(
-                              context: context,
-                              builder: (context) {
-                                return CupertinoAlertDialog(
-                                  title: Text('결제 진행'),
-                                  content: Text('결제 화면으로 이동합니다.'),
-                                  actions: [
-                                    CupertinoDialogAction(
-                                      isDefaultAction: true,
-                                      onPressed: () {
-                                        Navigator.of(
-                                          context,
-                                        ).pop();
-                                        Navigator.push(context, MaterialPageRoute(builder: (context)=> PaymentPage())); // 성공 메시지 닫기
-                                      },
-                                      child: Text('이동'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                            _showCartSuccessDialog(context); // 결제 완료 팝업 띄우기
+                
+                child: Text(
+                  "결제하기",);
                             
                           },
                           child: Text('구매'),
@@ -126,6 +109,50 @@ class CartItemPage extends ConsumerWidget {
           ),
         ],
       ),
+    );  
+  }
+  void _showCartSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Column(
+            children: [
+              Icon(Icons.check_circle, color: Colors.green, size: 60),
+              SizedBox(height: 10),
+              Text(
+                "결제 완료!",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          content: Text(
+            "주문 상세 내역은 마이페이지에서 확인할 수 있습니다.",
+            style: TextStyle(fontSize: 14, color: Colors.grey),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("확인", style: TextStyle(color: Colors.black)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.popUntil(
+                  context,
+                  (route) => route.isFirst,
+                ); 
+              },
+              child: Text("홈으로 가기", style: TextStyle(color: Colors.blue)),
+            ),
+          ],
+        );
+      },
     );
   }
 }
