@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'create_item_page.dart';
 import 'shopping_page.dart';
 import 'cart_item_page.dart';
+import 'package:flutter_shippingmall/components/promote_slider.dart';
 
 class MainPage extends ConsumerWidget {
   const MainPage({super.key});
@@ -13,12 +14,12 @@ class MainPage extends ConsumerWidget {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          const SizedBox(height: 150),
           Image.network(
             'https://i.imgur.com/baFkWzl.png',
             width: 500, // 원하는 크기로 조절
             height: 250,
           ),
+          PromoteSlider(),
           const SizedBox(height: 100),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -38,7 +39,7 @@ class MainPage extends ConsumerWidget {
             },
             child: const Icon(Icons.storefront),
           ),
-          const SizedBox(height: 5,),
+          const SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
