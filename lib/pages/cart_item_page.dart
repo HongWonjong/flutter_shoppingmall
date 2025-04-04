@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import '../components/custom_app_bar.dart';
 import '../providers/cart_provider.dart';
 
@@ -23,12 +24,12 @@ class CartItemPage extends ConsumerWidget {
                 final cartItem = cartItems[index];
                 return Column(
                   children: [
-                    ListTile(
+                    ListTile(//'${NumberFormat("#,###", "ko_KR").format(cartItem.item.price * cartItem.quantity)}원'
                       leading: cartItem.item.imageFile != null
                           ? Image.file(cartItem.item.imageFile!, width: 50, height: 50, fit: BoxFit.cover)
                           : const Icon(Icons.image, size: 50),
                       title: Text(cartItem.item.name),
-                      subtitle: Text('가격: ${(cartItem.item.price * cartItem.quantity).toInt()}원'),
+                      subtitle: Text('가격: ${NumberFormat("#,###", "ko_KR").format(cartItem.item.price * cartItem.quantity)}원'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -69,14 +70,14 @@ class CartItemPage extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '개수:${ref.watch(cartProvider.notifier).totalQuantity}개   총액: ${ref.watch(cartProvider.notifier).totalPrice.toInt()}원',
+                    '개수:${ref.watch(cartProvider.notifier).totalQuantity}개   총액: ${NumberFormat("#,###", "ko_KR").format(ref.watch(cartProvider.notifier).totalPrice)}원',
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   ElevatedButton(onPressed: () {
                     showCupertinoDialog(context: context, builder: (context){
                       return CupertinoAlertDialog(
                         title: Text('구매하시겠습니까?'),
-                        content: Text('${ref.watch(cartProvider.notifier).totalQuantity}개 총합 ${ref.watch(cartProvider.notifier).totalPrice.toInt()}원'),
+                        content: Text('${ref.watch(cartProvider.notifier).totalQuantity}개 총합 ${NumberFormat("#,###", "ko_KR").format(ref.watch(cartProvider.notifier).totalPrice)}원'),
                         actions: [CupertinoDialogAction(
                           isDestructiveAction: true,
                           onPressed: (){Navigator.of(context).pop();
