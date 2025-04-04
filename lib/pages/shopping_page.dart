@@ -6,53 +6,89 @@ import '../providers/item_provider.dart';
 import 'item_detail_page.dart';
 import 'package:intl/intl.dart';
 
-// 검색어 상태 관리 (검색어를 저장할 StateProvider 추가)
+// 검색어 상태 관리
 final searchQueryProvider = StateProvider<String>((ref) => "");
 
-// 검색어를 반영한 필터링된 아이템 리스트 Provider 생성
-final filteredItemListProvider = Provider((ref) {
-  final query =
-      ref.watch(searchQueryProvider).toLowerCase(); // 검색어를 가져오고 소문자로 변환
-  final items = ref.watch(itemListProvider); // 전체 아이템 목록을 가져옴
-  if (query.isEmpty) return items; // 검색어가 없으면 전체 아이템 반환
+// 선택된 상품 타입을 관리할 Provider
+final itemTypeProvider = StateProvider<String>((ref) => "전체"); // 기본값: 전체
 
-  return items
-      .where((item) => item.name.toLowerCase().contains(query))
-      .toList();
-  // 아이템 이름에 검색어가 포함된 것만 반환
+// 검색어 및 상품 타입을 반영한 필터링된 아이템 리스트 Provider
+final filteredItemListProvider = Provider((ref) {
+  final query = ref.watch(searchQueryProvider).toLowerCase(); // 검색어 가져오기
+  final selectedType = ref.watch(itemTypeProvider); // 선택된 상품 타입 가져오기
+  final items = ref.watch(itemListProvider); // 전체 아이템 목록 가져오기
+
+  // 검색어 필터링
+  var filteredItems = query.isEmpty
+      ? items
+      : items.where((item) => item.name.toLowerCase().contains(query)).toList();
+
+  // 상품 타입 필터링 (전체 선택 시 모든 상품 포함)
+  if (selectedType != "전체") {
+    filteredItems = filteredItems
+        .where((item) {
+          final itemType = getItemTypeText(item); // 상품 타입 가져오기
+          return itemType == selectedType; // 필터링 조건 적용
+        })
+        .toList();
+  }
+  return filteredItems;
 });
+
 
 class ShoppingPage extends ConsumerWidget {
   const ShoppingPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final items = ref.watch(
-      filteredItemListProvider,
-    ); // 필터링된 아이템 목록을 감시하여 가져오기
+    final items = ref.watch(filteredItemListProvider); // 필터링된 아이템 가져오기
+    final selectedType = ref.watch(itemTypeProvider); // 선택된 상품 타입 가져오기
 
     return Scaffold(
       appBar: AppBar(
         title: SizedBox(
-          width: 300,
+          width: 380, // 검색창 + 카테고리 선택이 한 줄에 들어가도록 조정
           height: 38,
-          child: TextField(
-            onChanged: (value) {
-              ref.read(searchQueryProvider.notifier).state =
-                  value; // 검색어 변경 시 상태 업데이트
-            },
-            textAlignVertical: TextAlignVertical.bottom,
-            decoration: InputDecoration(
-              suffixIcon: Icon(Icons.search),
-              hintText: '찾고 싶은 상품을 검색해보세요!',
-              border: OutlineInputBorder(),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFF4D81F0), width: 3),
+          child: Row(
+            children: [
+              // 🔹 상품 카테고리 선택 드롭다운
+              DropdownButton<String>(
+                value: selectedType,
+                items: ["전체", "의류", "가전제품", "음식", "기타"] // 카테고리 추가 가능
+                    .map((type) => DropdownMenuItem(
+                          value: type,
+                          child: Text(type),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    ref.read(itemTypeProvider.notifier).state = value; // 선택된 타입 업데이트
+                  }
+                },
               ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFF4D81F0), width: 3),
+              const SizedBox(width: 10), // 드롭다운과 검색창 사이 간격 조정
+
+              // 🔹 검색창 (남은 공간을 모두 차지하도록 `Expanded` 적용)
+              Expanded(
+                child: TextField(
+                  onChanged: (value) {
+                    ref.read(searchQueryProvider.notifier).state = value; // 검색어 변경 시 상태 업데이트
+                  },
+                  textAlignVertical: TextAlignVertical.bottom,
+                  decoration: InputDecoration(
+                    suffixIcon: Icon(Icons.search),
+                    hintText: '찾고 싶은 상품을 검색해보세요!',
+                    border: OutlineInputBorder(),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF4D81F0), width: 3),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF4D81F0), width: 3),
+                    ),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ),
         backgroundColor: const Color(0xFFEFEFEF),
