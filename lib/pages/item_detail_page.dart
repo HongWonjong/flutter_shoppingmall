@@ -73,32 +73,7 @@ class ItemDetailPage extends ConsumerWidget {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        showCupertinoDialog(
-                          context: context,
-                          builder: (context) {
-                            return CupertinoAlertDialog(
-                              title: Text('장바구니에 추가하시겠습니까?'),
-                              actions: [
-                                CupertinoDialogAction(
-                                  isDestructiveAction: true,
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('취소'),
-                                ),
-                                CupertinoDialogAction(
-                                  isDefaultAction: true,
-                                  onPressed: () {
-                                    ref.read(cartProvider.notifier).addToCart(item, 1);
-                                    Navigator.of(context).pop(); // 다이얼로그 닫기
-                                    _showNavigateToCartDialog(context); // 장바구니 이동 확인 다이얼로그 띄우기
-                                  },
-                                  child: Text('추가'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
+                        _showQuantityDialog(context, item, ref);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF4D81F0),
@@ -113,6 +88,45 @@ class ItemDetailPage extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  // 수량을 입력받는 다이얼로그
+  void _showQuantityDialog(BuildContext context, Item item, WidgetRef ref) {
+    final TextEditingController quantityController = TextEditingController();
+    
+    showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text('장바구니에 추가할 수량을 입력하세요'),
+          content: CupertinoTextField(
+            controller: quantityController,
+            keyboardType: TextInputType.number,
+            placeholder: '수량 입력',
+            padding: EdgeInsets.all(12),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              isDestructiveAction: true,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('취소'),
+            ),
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              onPressed: () {
+                int quantity = int.tryParse(quantityController.text) ?? 1;
+                ref.read(cartProvider.notifier).addToCart(item, quantity);
+                Navigator.of(context).pop(); // 다이얼로그 닫기
+                _showNavigateToCartDialog(context); // 장바구니 이동 확인 다이얼로그 띄우기
+              },
+              child: Text('추가'),
+            ),
+          ],
+        );
+      },
     );
   }
 
