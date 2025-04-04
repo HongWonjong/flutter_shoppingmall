@@ -83,7 +83,9 @@ class ShoppingPage extends ConsumerWidget {
                           ),
                           Text(item.company_name, style: TextStyle(fontSize: 12)),
                           SizedBox(height: 10),
-                          Text(item.description),
+                          Text(item.description,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           Spacer(),
                           Container(
                             padding: EdgeInsets.all(1),
