@@ -10,6 +10,6 @@ String getItemTypeText(Item item) {
   } else if (item.item_type == ItemType.None) {
     return "기타";
   } else {
-    return "알 수 없음"; // 안전을 위해 기본값 추가
+    return "알 수 없음";
   }
 }
