@@ -14,7 +14,7 @@ class ShoppingPage extends ConsumerWidget {
     return Scaffold(
       appBar: const CustomAppBar(title: '쇼핑 페이지'),
       body: ListView.builder(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         itemCount: items.length,
         itemBuilder: (context, index) {
           final item = items[index];
@@ -28,35 +28,33 @@ class ShoppingPage extends ConsumerWidget {
               );
             },
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              decoration: BoxDecoration(
+                border: Border.symmetric(horizontal: BorderSide(
+                  color: Colors.grey.shade300
+                ))
+              ),
+              padding: const EdgeInsets.all(20),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (item.imageFile != null)
                     SizedBox(
-                      width: 180,
-                      height: 180,
+                      width: 190,
+                      height: 190,
                       child: Image.file(item.imageFile!, fit: BoxFit.cover),
                     )
                   else
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.grey.shade400
-                        )
-                      ),
-                      child: const Icon(Icons.image, size: 180)
-                    ),
+                    const Icon(Icons.image, size: 200),
                   const SizedBox(width: 16),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(item.name, style: TextStyle(fontSize: 25)),
+                        Text(item.name, style: TextStyle(fontSize: 20)),
                         Text(
                           item.price == 0.0 ? '무료' : '\$${item.price}',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 25,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
