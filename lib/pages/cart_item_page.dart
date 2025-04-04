@@ -41,6 +41,7 @@ class CartItemPage extends ConsumerWidget {
                               );
                             },
                           ),
+                          Text('${cartItem.quantity}',style: TextStyle(fontSize: 18),),
                           IconButton(
                             icon: const Icon(Icons.remove),
                             onPressed: () {
