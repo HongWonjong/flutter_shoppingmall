@@ -122,7 +122,7 @@ class ItemDetailPage extends ConsumerWidget {
                 int quantity = int.tryParse(quantityController.text) ?? 1;
                 ref.read(cartProvider.notifier).addToCart(item, quantity);
                 Navigator.of(context).pop(); // 다이얼로그 닫기
-                _showNavigateToCartDialog(context); // 장바구니 이동 확인 다이얼로그 띄우기
+                _addCartDialog(context); // 장바구니 이동 확인 다이얼로그 띄우기
               },
               child: Text('추가'),
             ),
@@ -133,33 +133,49 @@ class ItemDetailPage extends ConsumerWidget {
   }
 
   // 장바구니로 이동할 것인지 묻는 다이얼로그
-  void _showNavigateToCartDialog(BuildContext context) {
-    showCupertinoDialog(
+  void _addCartDialog(BuildContext context) {
+    showDialog(
       context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: Text('장바구니로 이동하시겠습니까?'),
-          actions: [
-            CupertinoDialogAction(
-              isDestructiveAction: true,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Column(
+            children: [
+              Icon(Icons.shopping_cart, color: Colors.green, size: 60),
+              SizedBox(height: 10),
+              Text(
+                "장바구니 담기 완료",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          content: Text(
+            "장바구니에 해당 품목이 담겼습니다.",
+            style: TextStyle(fontSize: 14, color: Colors.grey),
+          ),
+          actions: [TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // 다이얼로그 닫기
+                Navigator.pop(context);
               },
-              child: Text('취소'),
+              child: Text("확인", style: TextStyle(color: Colors.black)),
             ),
-            CupertinoDialogAction(
-              isDefaultAction: true,
+            TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // 다이얼로그 닫기
+                Navigator.pop(context);
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const CartItemPage()), // 장바구니로 이동
                 );
               },
-              child: Text('확인'),
+              child: Text("장바구니 이동", style: TextStyle(color: Colors.blue)),
             ),
+           
           ],
         );
       },
     );
   }
+  
 }

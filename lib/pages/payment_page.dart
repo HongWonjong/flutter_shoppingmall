@@ -45,8 +45,8 @@ class PaymentPage extends ConsumerWidget {
               ),
               padding: EdgeInsets.all(12),
               child: ListView.builder(
-                shrinkWrap: true, // Column 안에서 사용할 때 필요!
-                physics: NeverScrollableScrollPhysics(), // 부모 스크롤과 충돌 방지
+                shrinkWrap: true, 
+                physics: NeverScrollableScrollPhysics(), 
                 itemCount: cartItems.length,
                 itemBuilder: (context, index) {
                   final cartItem = cartItems[index];
