@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_shippingmall/pages/cart_item_page.dart';
 import '../components/custom_app_bar.dart';
 import '../providers/item_provider.dart';
 import 'item_detail_page.dart';
@@ -12,7 +13,39 @@ class ShoppingPage extends ConsumerWidget {
     final items = ref.watch(itemListProvider);
 
     return Scaffold(
-      appBar: const CustomAppBar(title: '쇼핑 페이지'),
+      appBar: CustomAppBar(
+        title: '쇼핑 페이지',
+        actions: [
+          // 홈 버튼 필요 없을 것 같아 일단 주석 처리함
+          /*IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.home_outlined,
+              size: 40,
+              color: Colors.black,
+            ),
+            splashRadius: 30,
+          ),
+          SizedBox(width: 5),*/
+
+          // 장바구니로 바로 가는 버튼
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CartItemPage()),
+              );
+            },
+            icon: Icon(
+              Icons.shopping_cart_outlined,
+              size: 40,
+              color: Colors.black,
+            ),
+            splashRadius: 24,
+          ),
+          SizedBox(width: 10),
+        ],
+      ),
       body: ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 16),
         itemCount: items.length,
@@ -29,9 +62,9 @@ class ShoppingPage extends ConsumerWidget {
             },
             child: Container(
               decoration: BoxDecoration(
-                border: Border.symmetric(horizontal: BorderSide(
-                  color: Colors.grey.shade300
-                ))
+                border: Border.symmetric(
+                  horizontal: BorderSide(color: Colors.grey.shade300),
+                ),
               ),
               padding: const EdgeInsets.all(20),
               child: Row(
@@ -58,12 +91,8 @@ class ShoppingPage extends ConsumerWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(item.company_name,
-                          style: TextStyle(
-                            fontSize: 12,
-                          ),
-                        ),
-                        SizedBox(height: 10,),
+                        Text(item.company_name, style: TextStyle(fontSize: 12)),
+                        SizedBox(height: 10),
                         Text(item.description),
                       ],
                     ),
