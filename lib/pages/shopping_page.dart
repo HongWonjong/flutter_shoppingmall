@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_shippingmall/function/get_item_type_text.dart';
 import 'package:flutter_shippingmall/pages/cart_item_page.dart';
-import '../components/custom_app_bar.dart';
 import '../providers/item_provider.dart';
 import 'item_detail_page.dart';
 import 'package:intl/intl.dart';
@@ -15,22 +14,11 @@ class ShoppingPage extends ConsumerWidget {
     final items = ref.watch(itemListProvider);
 
     return Scaffold(
-      appBar: CustomAppBar(
-        title: '쇼핑 페이지',
+      appBar: AppBar(
+        title: Text('쇼핑 페이지'),
+        backgroundColor: const Color(0xFFEFEFEF),
+        centerTitle: true,
         actions: [
-          // 홈 버튼 필요 없을 것 같아 일단 주석 처리함
-          /*IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.home_outlined,
-              size: 40,
-              color: Colors.black,
-            ),
-            splashRadius: 30,
-          ),
-          SizedBox(width: 5),*/
-
-          // 장바구니로 바로 가는 버튼
           IconButton(
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context)=>CartItemPage()));
@@ -79,22 +67,39 @@ class ShoppingPage extends ConsumerWidget {
                     const Icon(Icons.image, size: 200),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(item.name, style: TextStyle(fontSize: 20)),
-                        Text(
-                          item.price == 0 ? '무료' : '${NumberFormat("#,###", "ko_KR").format(item.price)}원',
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
+                    child: SizedBox(
+                      height: 185,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(item.name, style: TextStyle(fontSize: 20)),
+                          Text(
+                            item.price == 0 ? '무료' : '${NumberFormat("#,###", "ko_KR").format(item.price)}원',
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Text(item.company_name, style: TextStyle(fontSize: 12)),
-                        SizedBox(height: 10),
-                        Text(item.description),
-                        Text(getItemTypeText(item)),
-                      ],
+                          Text(item.company_name, style: TextStyle(fontSize: 12)),
+                          SizedBox(height: 10),
+                          Text(item.description),
+                          Spacer(),
+                          Container(
+                            padding: EdgeInsets.all(1),
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Text(getItemTypeText(item),
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey[700],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
