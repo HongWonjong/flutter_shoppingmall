@@ -23,6 +23,7 @@ class ItemListNotifier extends StateNotifier<List<Item>> {
         price: 0,
         description: '열정으로 가득한 무료 개발자',
         imageFile: await _assetToFile('assets/developer.png'),
+        item_type: ItemType.None,
       ),
       Item(
         id: '2',
@@ -31,6 +32,7 @@ class ItemListNotifier extends StateNotifier<List<Item>> {
         price: 25000,
         description: '스페인산 고급 이베리코 돼지의 삼겹살',
         imageFile: await _assetToFile('assets/iberico_pork.png'),
+        item_type: ItemType.food,
       ),
       Item(
         id: '3',
@@ -39,6 +41,7 @@ class ItemListNotifier extends StateNotifier<List<Item>> {
         price: 1000,
         description: '유산균 100억마리 포함',
         imageFile: await _assetToFile('assets/yogurt.png'),
+        item_type: ItemType.food,
       ),
       Item(
         id: '4',
@@ -47,6 +50,7 @@ class ItemListNotifier extends StateNotifier<List<Item>> {
         price: 25000,
         description: '100% 자연산 치즈와 신선한 호주산 쇠고기 패티의 조합',
         imageFile: await _assetToFile('assets/cheese_hamburger.png'),
+        item_type: ItemType.food,
       ),
       Item(
         id: '5',
@@ -55,6 +59,7 @@ class ItemListNotifier extends StateNotifier<List<Item>> {
         price: 1700,
         description: '그 시절 그 맛',
         imageFile: await _assetToFile('assets/cream_bread.png'),
+        item_type: ItemType.food,
       ),
     ];
   }
@@ -72,7 +77,7 @@ class ItemListNotifier extends StateNotifier<List<Item>> {
     return file;
   }
 
-  void addItem(String name, String company_name, double price, String description, File? imageFile) {
+  void addItem(String name, String company_name, double price, String description, File? imageFile, ItemType item_type) {
     final newItem = Item(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       name: name,
@@ -80,6 +85,7 @@ class ItemListNotifier extends StateNotifier<List<Item>> {
       price: price,
       description: description,
       imageFile: imageFile,
+      item_type: item_type,
     );
     state = [...state, newItem];
   }

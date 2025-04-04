@@ -24,6 +24,7 @@ class ItemDetailPage extends ConsumerWidget {
         company_name: "이름 없음",
         price: 0.0,
         description: '해당 아이템을 찾을 수 없습니다.',
+        item_type: ItemType.None,
       ),
     );
 
