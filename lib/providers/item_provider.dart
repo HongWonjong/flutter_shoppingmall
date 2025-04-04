@@ -25,6 +25,30 @@ class ItemListNotifier extends StateNotifier<List<Item>> {
       description: '스페인산 고급 이베리코 돼지의 삼겹살',
       imageFile: null, // 초기에는 이미지 없음
     ),
+    Item(
+      id: '3',
+      name: '요구르트',
+      company_name: "(주) 야쿠르트",
+      price: 1.0,
+      description: '유산균 100억마리 포함',
+      imageFile: null, // 초기에는 이미지 없음
+    ),
+    Item(
+      id: '4',
+      name: '치즈 햄부기',
+      company_name: "(주) 햄부기킹",
+      price: 2.5,
+      description: '100% 자연산 치즈와 신선한 호주산 쇠고기 패티의 조합',
+      imageFile: null, // 초기에는 이미지 없음
+    ),
+    Item(
+      id: '5',
+      name: '크림빵',
+      company_name: "(주) 3립",
+      price: 1.7,
+      description: '그 시절 그 맛',
+      imageFile: null, // 초기에는 이미지 없음
+    ),
   ]);
 // 아이템 등록 페이지에서 사용하며, 새로운 아이템을 아이템 리스트에 추가한다.
   void addItem(String name, String company_name, double price, String description, File? imageFile) {
