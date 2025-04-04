@@ -17,6 +17,7 @@ dependencies:
   flutter:
     sdk: flutter
   item_picker: ^2.0.0
+  intl: ^0.20.2
 
 
   cupertino_icons: ^1.0.8

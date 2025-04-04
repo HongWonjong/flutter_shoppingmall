@@ -4,6 +4,7 @@ import 'package:flutter_shippingmall/pages/cart_item_page.dart';
 import '../components/custom_app_bar.dart';
 import '../providers/item_provider.dart';
 import 'item_detail_page.dart';
+import 'package:intl/intl.dart';
 
 class ShoppingPage extends ConsumerWidget {
   const ShoppingPage({super.key});
@@ -31,10 +32,7 @@ class ShoppingPage extends ConsumerWidget {
           // 장바구니로 바로 가는 버튼
           IconButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CartItemPage()),
-              );
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>CartItemPage()));
             },
             icon: Icon(
               Icons.shopping_cart_outlined,
@@ -85,7 +83,7 @@ class ShoppingPage extends ConsumerWidget {
                       children: [
                         Text(item.name, style: TextStyle(fontSize: 20)),
                         Text(
-                          item.price == 0.0 ? '무료' : '${item.price.toInt()}원',
+                          item.price == 0 ? '무료' : '${NumberFormat("#,###", "ko_KR").format(item.price)}원',
                           style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
