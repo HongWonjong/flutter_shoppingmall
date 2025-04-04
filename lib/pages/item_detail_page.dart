@@ -29,7 +29,7 @@ class ItemDetailPage extends ConsumerWidget {
     return Scaffold(
       appBar: CustomAppBar(title: item.name),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(top:16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -46,67 +46,88 @@ class ItemDetailPage extends ConsumerWidget {
                   child: const Center(child: Text('이미지 없음')),
                 ),
             const SizedBox(height: 16),
-            Text(
-              '이름: ${item.name}',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    '이름: ${item.name}',
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                
+              
+              const SizedBox(height: 8),
+              Text('가격: \$${item.price}', style: const TextStyle(fontSize: 16)),
+              const SizedBox(height: 8),
+              Text(
+                '설명: ${item.description}',
+                style: const TextStyle(fontSize: 16),
+              ),],),
             ),
-            const SizedBox(height: 8),
-            Text('가격: \$${item.price}', style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 8),
-            Text(
-              '설명: ${item.description}',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                showCupertinoDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                      title: Text('장바구니에 추가하시겠습니까?'),
-                      actions: [
-                        CupertinoDialogAction(
-                          isDestructiveAction: true,
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('취소'),
-                        ),
-                        CupertinoDialogAction(
-                          isDefaultAction: true,
-                          onPressed: () {
-                            ref.read(cartProvider.notifier).addToCart(item, 1);
-                            Navigator.of(context).pop();
-                            showCupertinoDialog(
-                              context: context,
-                              builder: (context) {
-                                return CupertinoAlertDialog(
-                                  title: Text('장바구니 추가 완료'),
-                                  content: Text('장바구니에 상품이 추가되었습니다!'),
-                                  actions: [
-                                    CupertinoDialogAction(
-                                      isDefaultAction: true,
-                                      onPressed: () {
-                                        Navigator.of(
-                                          context,
-                                        ).pop(); // 성공 메시지 닫기
+            
+            BottomAppBar(
+              color: const Color(0xFFEFEFEF),
+              elevation: 0,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        showCupertinoDialog(
+                          context: context,
+                          builder: (context) {
+                            return CupertinoAlertDialog(
+                              title: Text('장바구니에 추가하시겠습니까?'),
+                              actions: [
+                                CupertinoDialogAction(
+                                  isDestructiveAction: true,
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('취소'),
+                                ),
+                                CupertinoDialogAction(
+                                  isDefaultAction: true,
+                                  onPressed: () {
+                                    ref.read(cartProvider.notifier).addToCart(item, 1);
+                                    Navigator.of(context).pop();
+                                    showCupertinoDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return CupertinoAlertDialog(
+                                          title: Text('장바구니 추가 완료'),
+                                          content: Text('장바구니에 상품이 추가되었습니다!'),
+                                          actions: [
+                                            CupertinoDialogAction(
+                                              isDefaultAction: true,
+                                              onPressed: () {
+                                                Navigator.of(
+                                                  context,
+                                                ).pop(); // 성공 메시지 닫기
+                                              },
+                                              child: Text('확인'),
+                                            ),
+                                          ],
+                                        );
                                       },
-                                      child: Text('확인'),
-                                    ),
-                                  ],
-                                );
-                              },
+                                    );
+                                  },
+                                  child: Text('추가'),
+                                ),
+                              ],
                             );
                           },
-                          child: Text('추가'),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-              child: const Text('장바구니에 추가'),
+                        );
+                      },style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF4D81F0),
+                    foregroundColor: Colors.white
+                  ),
+                      child: const Text('장바구니에 추가'),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
