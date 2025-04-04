@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_shippingmall/pages/payment_page.dart';
 import 'package:intl/intl.dart';
 import '../components/custom_app_bar.dart';
 import '../providers/cart_provider.dart';
@@ -100,7 +101,8 @@ class CartItemPage extends ConsumerWidget {
                                       onPressed: () {
                                         Navigator.of(
                                           context,
-                                        ).pop(); // 성공 메시지 닫기
+                                        ).pop();
+                                        Navigator.push(context, MaterialPageRoute(builder: (context)=> PaymentPage())); // 성공 메시지 닫기
                                       },
                                       child: Text('이동'),
                                     ),
