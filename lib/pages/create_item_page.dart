@@ -182,7 +182,9 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
                 ? '식품'
                 : type == ItemType.clothing
                 ? '의류'
-                : '가전제품',
+                : type == ItemType.appliance
+                ? '가전제품'
+                : '기타'
           ),
         )),
       ],
