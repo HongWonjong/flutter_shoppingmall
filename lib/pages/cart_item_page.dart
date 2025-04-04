@@ -21,35 +21,40 @@ class CartItemPage extends ConsumerWidget {
               itemCount: cartItems.length,
               itemBuilder: (context, index) {
                 final cartItem = cartItems[index];
-                return ListTile(
-                  leading: cartItem.item.imageFile != null
-                      ? Image.file(cartItem.item.imageFile!, width: 50, height: 50, fit: BoxFit.cover)
-                      : const Icon(Icons.image, size: 50),
-                  title: Text(cartItem.item.name),
-                  subtitle: Text('가격: \$${cartItem.item.price * cartItem.quantity}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: () {
-                          ref.read(cartProvider.notifier).updateQuantity(
-                            cartItem.item.id,
-                            cartItem.quantity + 1,
-                          );
-                        },
+                return Column(
+                  children: [
+                    ListTile(
+                      leading: cartItem.item.imageFile != null
+                          ? Image.file(cartItem.item.imageFile!, width: 50, height: 50, fit: BoxFit.cover)
+                          : const Icon(Icons.image, size: 50),
+                      title: Text(cartItem.item.name),
+                      subtitle: Text('가격: ${(cartItem.item.price * cartItem.quantity).toInt()}원'),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.add),
+                            onPressed: () {
+                              ref.read(cartProvider.notifier).updateQuantity(
+                                cartItem.item.id,
+                                cartItem.quantity + 1,
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.remove),
+                            onPressed: () {
+                              ref.read(cartProvider.notifier).updateQuantity(
+                                cartItem.item.id,
+                                cartItem.quantity - 1,
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.remove),
-                        onPressed: () {
-                          ref.read(cartProvider.notifier).updateQuantity(
-                            cartItem.item.id,
-                            cartItem.quantity - 1,
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                    ),
+                    const Divider(height: 1, thickness: 1),
+                  ],
                 );
               },
             ),
@@ -63,14 +68,14 @@ class CartItemPage extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '총액: \$${ref.watch(cartProvider.notifier).totalPrice.toStringAsFixed(2)}',
+                    '개수:${ref.watch(cartProvider.notifier).totalQuantity}개   총액: ${ref.watch(cartProvider.notifier).totalPrice.toInt()}원',
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   ElevatedButton(onPressed: () {
                     showCupertinoDialog(context: context, builder: (context){
                       return CupertinoAlertDialog(
                         title: Text('구매하시겠습니까?'),
-                        content: Text('${ref.watch(cartProvider.notifier).totalQuantity}개 총합 ${ref.watch(cartProvider.notifier).totalPrice.toStringAsFixed(2)}원'),
+                        content: Text('${ref.watch(cartProvider.notifier).totalQuantity}개 총합 ${ref.watch(cartProvider.notifier).totalPrice.toInt()}원'),
                         actions: [CupertinoDialogAction(
                           isDestructiveAction: true,
                           onPressed: (){Navigator.of(context).pop();

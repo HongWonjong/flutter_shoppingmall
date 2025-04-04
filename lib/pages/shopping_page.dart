@@ -85,7 +85,7 @@ class ShoppingPage extends ConsumerWidget {
                       children: [
                         Text(item.name, style: TextStyle(fontSize: 20)),
                         Text(
-                          item.price == 0.0 ? '무료' : '\$${item.price}',
+                          item.price == 0.0 ? '무료' : '${item.price.toInt()}원',
                           style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.bold,
