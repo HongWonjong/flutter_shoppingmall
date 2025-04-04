@@ -19,22 +19,23 @@ final filteredItemListProvider = Provider((ref) {
   final items = ref.watch(itemListProvider); // 전체 아이템 목록 가져오기
 
   // 검색어 필터링
-  var filteredItems = query.isEmpty
-      ? items
-      : items.where((item) => item.name.toLowerCase().contains(query)).toList();
+  var filteredItems =
+      query.isEmpty
+          ? items
+          : items
+              .where((item) => item.name.toLowerCase().contains(query))
+              .toList();
 
   // 상품 타입 필터링 (전체 선택 시 모든 상품 포함)
   if (selectedType != "전체") {
-    filteredItems = filteredItems
-        .where((item) {
+    filteredItems =
+        filteredItems.where((item) {
           final itemType = getItemTypeText(item); // 상품 타입 가져오기
           return itemType == selectedType; // 필터링 조건 적용
-        })
-        .toList();
+        }).toList();
   }
   return filteredItems;
 });
-
 
 class ShoppingPage extends ConsumerWidget {
   const ShoppingPage({super.key});
@@ -47,32 +48,35 @@ class ShoppingPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: SizedBox(
-          width: 380, // 검색창 + 카테고리 선택이 한 줄에 들어가도록 조정
+          width: 500, // 검색창 + 카테고리 선택이 한 줄에 들어가도록 조정
           height: 38,
           child: Row(
             children: [
               // 🔹 상품 카테고리 선택 드롭다운
               DropdownButton<String>(
+                alignment: Alignment.centerRight,
                 value: selectedType,
-                items: ["전체", "의류", "가전제품", "음식", "기타"] // 카테고리 추가 가능
-                    .map((type) => DropdownMenuItem(
-                          value: type,
-                          child: Text(type),
-                        ))
-                    .toList(),
+                items:
+                    ["전체", "의류", "가전제품", "음식", "기타"] // 카테고리 추가 가능
+                        .map(
+                          (type) =>
+                              DropdownMenuItem(value: type, child: Text(type)),
+                        )
+                        .toList(),
                 onChanged: (value) {
                   if (value != null) {
-                    ref.read(itemTypeProvider.notifier).state = value; // 선택된 타입 업데이트
+                    ref.read(itemTypeProvider.notifier).state =
+                        value; // 선택된 타입 업데이트
                   }
                 },
               ),
               const SizedBox(width: 10), // 드롭다운과 검색창 사이 간격 조정
-
               // 🔹 검색창 (남은 공간을 모두 차지하도록 `Expanded` 적용)
               Expanded(
                 child: TextField(
                   onChanged: (value) {
-                    ref.read(searchQueryProvider.notifier).state = value; // 검색어 변경 시 상태 업데이트
+                    ref.read(searchQueryProvider.notifier).state =
+                        value; // 검색어 변경 시 상태 업데이트
                   },
                   textAlignVertical: TextAlignVertical.bottom,
                   decoration: InputDecoration(
@@ -80,10 +84,16 @@ class ShoppingPage extends ConsumerWidget {
                     hintText: '찾고 싶은 상품을 검색해보세요!',
                     border: OutlineInputBorder(),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4D81F0), width: 3),
+                      borderSide: BorderSide(
+                        color: Color(0xFF4D81F0),
+                        width: 3,
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Color(0xFF4D81F0), width: 3),
+                      borderSide: BorderSide(
+                        color: Color(0xFF4D81F0),
+                        width: 3,
+                      ),
                     ),
                   ),
                 ),
