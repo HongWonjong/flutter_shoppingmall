@@ -135,6 +135,10 @@ class CartItemPage extends ConsumerWidget {
               onPressed: () {
                 _goToPayment(context); // 결제 완료 팝업 띄우기
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                padding: EdgeInsets.symmetric(vertical: 16),
+              ),
               child: Text(
                 "총 ${ref.watch(cartProvider.notifier).totalQuantity}개 상품 구매하기",
                 style: TextStyle(
@@ -142,10 +146,6 @@ class CartItemPage extends ConsumerWidget {
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: EdgeInsets.symmetric(vertical: 16),
               ),
             ),
           ),

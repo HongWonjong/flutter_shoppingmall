@@ -113,15 +113,15 @@ class ItemListNotifier extends StateNotifier<List<Item>> {
     return file;
   }
 
-  void addItem(String name, String company_name, double price, String description, File? imageFile, ItemType item_type) {
+  void addItem(String name, String companyName, double price, String description, File? imageFile, ItemType itemType) {
     final newItem = Item(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       name: name,
-      company_name: company_name,
+      company_name: companyName,
       price: price,
       description: description,
       imageFile: imageFile,
-      item_type: item_type,
+      item_type: itemType,
     );
     state = [...state, newItem];
   }

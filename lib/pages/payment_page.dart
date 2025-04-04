@@ -1,9 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_shippingmall/pages/payment_page.dart';
 import 'package:intl/intl.dart';
-import '../components/custom_app_bar.dart';
 import '../providers/cart_provider.dart';
 
 class PaymentPage extends ConsumerWidget {
@@ -115,13 +112,13 @@ class PaymentPage extends ConsumerWidget {
                 onPressed: () {
                   _showPaymentSuccessDialog(context); // 결제 완료 팝업 띄우기
                 },
-                child: Text(
-                  "결제하기",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.white),
-                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   padding: EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(
+                  "결제하기",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.white),
                 ),
               ),
             ),
