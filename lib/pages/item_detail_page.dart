@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import '../components/custom_app_bar.dart';
 import '../models/item.dart';
 import '../providers/cart_provider.dart';
@@ -54,7 +55,7 @@ class ItemDetailPage extends ConsumerWidget {
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
-                  Text('가격: \$${item.price}', style: const TextStyle(fontSize: 16)),
+                  Text('가격: ${NumberFormat("#,###", "ko_KR").format(item.price)}원', style: const TextStyle(fontSize: 16)),
                   const SizedBox(height: 8),
                   Text(
                     '설명: ${item.description}',
