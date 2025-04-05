@@ -75,10 +75,12 @@ class ItemDetailPage extends ConsumerWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
+                        _showQuantityDialog(context, item, ref);
+                        
                         // 결제 완료 팝업 띄우기
                       },
                       child: Text(
-                        "장바니에 추가",
+                        "장바구니에 추가",
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
