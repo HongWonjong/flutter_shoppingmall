@@ -66,7 +66,7 @@ class CartItemPage extends ConsumerWidget {
                             Text(
                               '${NumberFormat("#,###", "ko_KR").format(cartItem.item.price * cartItem.quantity)}원',
                               style: TextStyle(
-                                fontSize: 20,
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
