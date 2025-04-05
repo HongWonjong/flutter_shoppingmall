@@ -76,7 +76,7 @@ class ItemDetailPage extends ConsumerWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         _showQuantityDialog(context, item, ref);
-                        
+
                         // 결제 완료 팝업 띄우기
                       },
                       child: Text(
@@ -106,34 +106,44 @@ class ItemDetailPage extends ConsumerWidget {
   void _showQuantityDialog(BuildContext context, Item item, WidgetRef ref) {
     final TextEditingController quantityController = TextEditingController();
 
-    showCupertinoDialog(
+    showDialog(
       context: context,
       builder: (context) {
-        return CupertinoAlertDialog(
-          title: Text('장바구니에 추가할 수량을 입력하세요'),
-          content: CupertinoTextField(
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Column(
+            children: [
+              Icon(Icons.shopping_cart, color: Colors.green, size: 60),
+              SizedBox(height: 10),
+              Text('수량을 입력하세요'),
+            ],
+          ),
+          content: TextField(
             controller: quantityController,
             keyboardType: TextInputType.number,
-            placeholder: '수량 입력',
-            padding: EdgeInsets.all(12),
+            decoration: InputDecoration(
+              hintText: '수량 입력',
+              contentPadding: EdgeInsets.all(12),
+            ),
           ),
+
           actions: [
-            CupertinoDialogAction(
-              isDestructiveAction: true,
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('취소'),
+              child: Text("취소", style: TextStyle(color: Colors.black)),
             ),
-            CupertinoDialogAction(
-              isDefaultAction: true,
+            TextButton(
               onPressed: () {
                 int quantity = int.tryParse(quantityController.text) ?? 1;
                 ref.read(cartProvider.notifier).addToCart(item, quantity);
                 Navigator.of(context).pop(); // 다이얼로그 닫기
                 _addCartDialog(context); // 장바구니 이동 확인 다이얼로그 띄우기
               },
-              child: Text('추가'),
+              child: Text("추가", style: TextStyle(color: Colors.blue)),
             ),
           ],
         );
