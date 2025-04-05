@@ -18,15 +18,18 @@ class ItemDetailPage extends ConsumerWidget {
     final items = ref.watch(itemListProvider);
     final item = items.firstWhere(
       (item) => item.id == itemId,
-      orElse: () => Item(
-        id: '',
-        name: '아이템 없음',
-        company_name: "이름 없음",
-        price: 0.0,
-        description: '해당 아이템을 찾을 수 없습니다.',
-        item_type: ItemType.None,
-      ),
+      orElse:
+          () => Item(
+            id: '',
+            name: '아이템 없음',
+            company_name: "이름 없음",
+            price: 0.0,
+            description: '해당 아이템을 찾을 수 없습니다.',
+            item_type: ItemType.None,
+          ),
     );
+    // 카운트용 프로바이더
+    final count = ref.watch(countProvider);
 
     return Scaffold(
       appBar: CustomAppBar(title: item.name),
@@ -37,17 +40,17 @@ class ItemDetailPage extends ConsumerWidget {
           children: [
             item.imageFile != null
                 ? Image.file(
-                    item.imageFile!,
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  )
+                  item.imageFile!,
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                )
                 : Container(
-                    height: 200,
-                    color: Colors.grey[300],
-                    child: const Center(child: Text('이미지 없음')),
-                  ),
-            const SizedBox(height: 20),
+                  height: 200,
+                  color: Colors.grey[300],
+                  child: const Center(child: Text('이미지 없음')),
+                ),
+            SizedBox(height: 10),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -55,8 +58,13 @@ class ItemDetailPage extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(item.name, style: const TextStyle(fontSize: 25)),
-                      const SizedBox(height: 4),
+                      Text(
+                        item.name,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       Text(
                         '${NumberFormat("#,###", "ko_KR").format(item.price)}원',
                         style: TextStyle(
@@ -68,55 +76,145 @@ class ItemDetailPage extends ConsumerWidget {
                     ],
                   ),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
-                    children: [
-                      const Text('0', style: TextStyle(fontSize: 20)),
-                      Column(
-                        children: const [
-                          Icon(Icons.keyboard_arrow_up, size: 25),
-                          Icon(Icons.keyboard_arrow_down, size: 25),
+                Column(
+                  children: [
+                    SizedBox(height: 10),
+                    Container(
+                      width: 100,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade700),
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                '$count',
+                                style: TextStyle(fontSize: 22),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade600),
+                            ),
+                            child: Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    ref.read(countProvider.notifier).state++;
+                                  },
+                                  child: Icon(
+                                    Icons.keyboard_arrow_up,
+                                    size: 22,
+                                  ),
+                                ),
+                                Container(
+                                  color: Colors.grey[500],
+                                  width: 30,
+                                  height: 1,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (count > 0) {
+                                      ref.read(countProvider.notifier).state--;
+                                    }
+                                  },
+                                  child: Icon(
+                                    Icons.keyboard_arrow_down,
+                                    color: Colors.grey[600],
+                                    size: 22,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            Text(
-              item.description,
-              style: const TextStyle(fontSize: 16),
-            ),
+            Text(item.description, style: const TextStyle(fontSize: 18)),
           ],
         ),
       ),
       bottomNavigationBar: Container(
-          padding: EdgeInsets.all(16),
-          width: double.infinity,
-          child: ElevatedButton(
-            onPressed: () {
-              _showQuantityDialog(context, item, ref);
-            },
-            child: Text(
-              "구매하기",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-              padding: EdgeInsets.symmetric(vertical: 16),
+        padding: EdgeInsets.all(16),
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () {
+            ref.watch(cartProvider.notifier).addToCart(item, count);
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  title: Column(
+                    children: [
+                      Icon(Icons.check_circle, color: Colors.green, size: 60),
+                      SizedBox(height: 10),
+                      Text(
+                        "상품이 장바구니에 담겼습니다.",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  content: Text(
+                    "주문 상세 내역은 장바구니에서 확인할 수 있습니다.",
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("확인", style: TextStyle(color: Colors.black)),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CartItemPage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "장바구니로 가기",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          child: Text(
+            "장바구니 담기",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
             ),
           ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue,
+            padding: EdgeInsets.symmetric(vertical: 16),
+          ),
         ),
+      ),
     );
   }
 
@@ -194,12 +292,13 @@ class ItemDetailPage extends ConsumerWidget {
               onPressed: () {
                 Navigator.pop(context);
                 Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const CartItemPage(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const CartItemPage()),
                 );
               },
-              child: const Text("장바구니 이동", style: TextStyle(color: Colors.blue)),
+              child: const Text(
+                "장바구니 이동",
+                style: TextStyle(color: Colors.blue),
+              ),
             ),
           ],
         );
