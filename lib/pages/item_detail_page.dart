@@ -18,14 +18,15 @@ class ItemDetailPage extends ConsumerWidget {
     final items = ref.watch(itemListProvider);
     final item = items.firstWhere(
       (item) => item.id == itemId,
-      orElse: () => Item(
-        id: '',
-        name: '아이템 없음',
-        company_name: "이름 없음",
-        price: 0.0,
-        description: '해당 아이템을 찾을 수 없습니다.',
-        item_type: ItemType.None,
-      ),
+      orElse:
+          () => Item(
+            id: '',
+            name: '아이템 없음',
+            company_name: "이름 없음",
+            price: 0.0,
+            description: '해당 아이템을 찾을 수 없습니다.',
+            item_type: ItemType.None,
+          ),
     );
 
     return Scaffold(
@@ -37,54 +38,60 @@ class ItemDetailPage extends ConsumerWidget {
           children: [
             item.imageFile != null
                 ? Image.file(
-                    item.imageFile!,
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  )
+                  item.imageFile!,
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                )
                 : Container(
-                    height: 200,
-                    color: Colors.grey[300],
-                    child: const Center(child: Text('이미지 없음')),
-                  ),
+                  height: 200,
+                  color: Colors.grey[300],
+                  child: const Center(child: Text('이미지 없음')),
+                ),
             const SizedBox(height: 16),
             Expanded(
               child: Column(
                 children: [
                   Text(
                     '이름: ${item.name}',
-                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
-                  Text('가격: ${NumberFormat("#,###", "ko_KR").format(item.price)}원', style: const TextStyle(fontSize: 16)),
+                  Text(
+                    '가격: ${NumberFormat("#,###", "ko_KR").format(item.price)}원',
+                    style: const TextStyle(fontSize: 16),
+                  ),
                   const SizedBox(height: 8),
                   Text(
                     '설명: ${item.description}',
                     style: const TextStyle(fontSize: 16),
                   ),
-                ],
-              ),
-            ),
-            BottomAppBar(
-              color: const Color(0xFFEFEFEF),
-              elevation: 0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
+                  Spacer(),
+                  Container(
+                    padding: EdgeInsets.all(16),
+                    width: double.infinity,
+                    child: ElevatedButton(
                       onPressed: () {
-                        _showQuantityDialog(context, item, ref);
+                        // 결제 완료 팝업 띄우기
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF4D81F0),
-                        foregroundColor: Colors.white,
+                      child: Text(
+                        "장바니에 추가",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
                       ),
-                      child: const Text('장바구니에 추가'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -96,7 +103,7 @@ class ItemDetailPage extends ConsumerWidget {
   // 수량을 입력받는 다이얼로그
   void _showQuantityDialog(BuildContext context, Item item, WidgetRef ref) {
     final TextEditingController quantityController = TextEditingController();
-    
+
     showCupertinoDialog(
       context: context,
       builder: (context) {
@@ -156,7 +163,8 @@ class ItemDetailPage extends ConsumerWidget {
             "장바구니에 해당 품목이 담겼습니다.",
             style: TextStyle(fontSize: 14, color: Colors.grey),
           ),
-          actions: [TextButton(
+          actions: [
+            TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -166,16 +174,16 @@ class ItemDetailPage extends ConsumerWidget {
               onPressed: () {
                 Navigator.pop(context);
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const CartItemPage()), // 장바구니로 이동
+                  MaterialPageRoute(
+                    builder: (context) => const CartItemPage(),
+                  ), // 장바구니로 이동
                 );
               },
               child: Text("장바구니 이동", style: TextStyle(color: Colors.blue)),
             ),
-           
           ],
         );
       },
     );
   }
-  
 }
