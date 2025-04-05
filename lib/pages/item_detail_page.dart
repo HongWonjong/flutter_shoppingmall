@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -6,18 +5,25 @@ import '../components/custom_app_bar.dart';
 import '../models/item.dart';
 import '../providers/cart_provider.dart';
 import '../providers/item_provider.dart';
-import '../pages/cart_item_page.dart'; // 장바구니 페이지 임포트
+import '../pages/cart_item_page.dart';
 
-class ItemDetailPage extends ConsumerWidget {
+class ItemDetailPage extends ConsumerStatefulWidget {
   final String itemId;
 
   const ItemDetailPage({super.key, required this.itemId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _ItemDetailPageState createState() => _ItemDetailPageState();
+}
+
+class _ItemDetailPageState extends ConsumerState<ItemDetailPage> {
+  int count = 1;
+  
+  @override
+  Widget build(BuildContext context) {
     final items = ref.watch(itemListProvider);
     final item = items.firstWhere(
-      (item) => item.id == itemId,
+      (item) => item.id == widget.itemId,
       orElse:
           () => Item(
             id: '',
@@ -28,8 +34,6 @@ class ItemDetailPage extends ConsumerWidget {
             item_type: ItemType.None,
           ),
     );
-    // 카운트용 프로바이더
-    final count = ref.watch(countProvider);
 
     return Scaffold(
       appBar: CustomAppBar(title: item.name),
@@ -105,7 +109,9 @@ class ItemDetailPage extends ConsumerWidget {
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    ref.read(countProvider.notifier).state++;
+                                    setState(() {
+                                      count++;
+                                    });
                                   },
                                   child: Icon(
                                     Icons.keyboard_arrow_up,
@@ -119,8 +125,10 @@ class ItemDetailPage extends ConsumerWidget {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    if (count > 0) {
-                                      ref.read(countProvider.notifier).state--;
+                                    if (count > 1) {
+                                      setState(() {
+                                      count--;
+                                    });
                                     }
                                   },
                                   child: Icon(
@@ -215,94 +223,6 @@ class ItemDetailPage extends ConsumerWidget {
           ),
         ),
       ),
-    );
-  }
-
-  // 수량을 입력받는 다이얼로그
-  void _showQuantityDialog(BuildContext context, Item item, WidgetRef ref) {
-    final TextEditingController quantityController = TextEditingController();
-
-    showCupertinoDialog(
-      context: context,
-      builder: (context) {
-        return CupertinoAlertDialog(
-          title: const Text('장바구니에 추가할 수량을 입력하세요'),
-          content: CupertinoTextField(
-            controller: quantityController,
-            keyboardType: TextInputType.number,
-            placeholder: '수량 입력',
-            padding: const EdgeInsets.all(12),
-          ),
-          actions: [
-            CupertinoDialogAction(
-              isDestructiveAction: true,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('취소'),
-            ),
-            CupertinoDialogAction(
-              isDefaultAction: true,
-              onPressed: () {
-                int quantity = int.tryParse(quantityController.text) ?? 1;
-                ref.read(cartProvider.notifier).addToCart(item, quantity);
-                Navigator.of(context).pop(); // 다이얼로그 닫기
-                _addCartDialog(context); // 장바구니 이동 확인 다이얼로그 띄우기
-              },
-              child: const Text('추가'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  // 장바구니로 이동할 것인지 묻는 다이얼로그
-  void _addCartDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          title: Column(
-            children: const [
-              Icon(Icons.shopping_cart, color: Colors.green, size: 60),
-              SizedBox(height: 10),
-              Text(
-                "장바구니 담기 완료",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          content: const Text(
-            "장바구니에 해당 품목이 담겼습니다.",
-            style: TextStyle(fontSize: 14, color: Colors.grey),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("확인", style: TextStyle(color: Colors.black)),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const CartItemPage()),
-                );
-              },
-              child: const Text(
-                "장바구니 이동",
-                style: TextStyle(color: Colors.blue),
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 }

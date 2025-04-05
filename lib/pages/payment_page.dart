@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_shippingmall/pages/payment_page.dart';
 import 'package:flutter_shippingmall/providers/item_provider.dart';
 import 'package:intl/intl.dart';
-import '../components/custom_app_bar.dart';
 import '../providers/cart_provider.dart';
 
 class PaymentPage extends ConsumerWidget {
