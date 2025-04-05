@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../components/custom_app_bar.dart';
@@ -65,7 +66,36 @@ class ItemDetailPage extends ConsumerWidget {
                   ],
                 ),
                 Spacer(),
-                Container(width: 50, height: 50, color: Colors.grey),
+                Container(
+                  padding: EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    border: Border.all()
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 30),
+                        child: Text('0',
+                          style: TextStyle(
+                            fontSize: 25
+                          ),
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          Icon(Icons.keyboard_arrow_up,
+                            size: 30,
+                          ),
+                          Icon(Icons.keyboard_arrow_down,
+                            size: 30,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
 

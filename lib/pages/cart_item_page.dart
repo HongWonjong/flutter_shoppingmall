@@ -23,7 +23,7 @@ class CartItemPage extends ConsumerWidget {
         children: [
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               itemCount: cartItems.length,
               itemBuilder: (context, index) {
                 final cartItem = cartItems[index];
@@ -41,37 +41,36 @@ class CartItemPage extends ConsumerWidget {
                           )
                           : const Icon(Icons.image, size: 100),
                       SizedBox(width: 10),
-                      SizedBox(
-                        width: 180,
-                        height: 100,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              cartItem.item.name,
-                              style: TextStyle(fontSize: 15),
-                            ),
-                            Text(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            cartItem.item.name,
+                            style: TextStyle(fontSize: 15),
+                          ),
+                          SizedBox(
+                            width: 150,
+                            child: Text(
                               cartItem.item.description,
                               style: TextStyle(color: Colors.grey[700]),
                               overflow: TextOverflow.ellipsis,
                             ),
-                            Text(
-                              '내일($tomorrowWeekday) 도착 보장',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.green[800],
-                              ),
+                          ),
+                          Text(
+                            '내일($tomorrowWeekday) 도착 보장',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.green[800],
                             ),
-                            Text(
-                              '${NumberFormat("#,###", "ko_KR").format(cartItem.item.price * cartItem.quantity)}원',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          ),
+                          Text(
+                            '${NumberFormat("#,###", "ko_KR").format(cartItem.item.price * cartItem.quantity)}원',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       Spacer(),
                       Column(
