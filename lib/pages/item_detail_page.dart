@@ -31,15 +31,14 @@ class ItemDetailPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: CustomAppBar(title: item.name),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 16.0),
+      body: Container(
+        padding: EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             item.imageFile != null
                 ? Image.file(
                   item.imageFile!,
-                  height: 200,
+                  height: 250,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 )
@@ -48,52 +47,48 @@ class ItemDetailPage extends ConsumerWidget {
                   color: Colors.grey[300],
                   child: const Center(child: Text('이미지 없음')),
                 ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: Column(
-                children: [
-                  Text(
-                    '이름: ${item.name}',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+            SizedBox(height: 10),
+            Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.name, style: TextStyle(fontSize: 30)),
+                    Text(
+                      '${NumberFormat("#,###", "ko_KR").format(item.price)}원',
+                      style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red[800],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '가격: ${NumberFormat("#,###", "ko_KR").format(item.price)}원',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '설명: ${item.description}',
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  Spacer(),
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _showQuantityDialog(context, item, ref);
+                  ],
+                ),
+                Spacer(),
+                Container(width: 50, height: 50, color: Colors.grey),
+              ],
+            ),
 
-                        // 결제 완료 팝업 띄우기
-                      },
-                      child: Text(
-                        "장바구니에 추가",
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                      ),
-                    ),
+            Spacer(),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  _showQuantityDialog(context, item, ref);
+                  //_showQuantityDialog 거치지 않고 바로 장바구니에 추가
+                },
+                child: Text(
+                  '장바니에 추가',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                ],
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                ),
               ),
             ),
           ],
@@ -106,44 +101,34 @@ class ItemDetailPage extends ConsumerWidget {
   void _showQuantityDialog(BuildContext context, Item item, WidgetRef ref) {
     final TextEditingController quantityController = TextEditingController();
 
-    showDialog(
+    showCupertinoDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          title: Column(
-            children: [
-              Icon(Icons.shopping_cart, color: Colors.green, size: 60),
-              SizedBox(height: 10),
-              Text('수량을 입력하세요'),
-            ],
-          ),
-          content: TextField(
+        return CupertinoAlertDialog(
+          title: Text('장바구니에 추가할 수량을 입력하세요'),
+          content: CupertinoTextField(
             controller: quantityController,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              hintText: '수량 입력',
-              contentPadding: EdgeInsets.all(12),
-            ),
+            placeholder: '수량 입력',
+            padding: EdgeInsets.all(12),
           ),
-
           actions: [
-            TextButton(
+            CupertinoDialogAction(
+              isDestructiveAction: true,
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("취소", style: TextStyle(color: Colors.black)),
+              child: Text('취소'),
             ),
-            TextButton(
+            CupertinoDialogAction(
+              isDefaultAction: true,
               onPressed: () {
                 int quantity = int.tryParse(quantityController.text) ?? 1;
                 ref.read(cartProvider.notifier).addToCart(item, quantity);
                 Navigator.of(context).pop(); // 다이얼로그 닫기
                 _addCartDialog(context); // 장바구니 이동 확인 다이얼로그 띄우기
               },
-              child: Text("추가", style: TextStyle(color: Colors.blue)),
+              child: Text('추가'),
             ),
           ],
         );
