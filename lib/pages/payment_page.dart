@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_shippingmall/pages/payment_page.dart';
+import 'package:flutter_shippingmall/providers/item_provider.dart';
 import 'package:intl/intl.dart';
 import '../components/custom_app_bar.dart';
 import '../providers/cart_provider.dart';
@@ -12,6 +13,11 @@ class PaymentPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cartItems = ref.watch(cartProvider);
+    final selectedCoupon = ref.watch(couponProvider);
+    final totalPrice = ref.watch(cartProvider.notifier).totalPrice;
+    final discount = _getCouponDiscount(selectedCoupon);
+    final finalPrice =
+        (totalPrice - discount).clamp(0, double.infinity).toInt();
 
     return Scaffold(
       appBar: AppBar(
@@ -45,8 +51,8 @@ class PaymentPage extends ConsumerWidget {
               ),
               padding: EdgeInsets.all(12),
               child: ListView.builder(
-                shrinkWrap: true, 
-                physics: NeverScrollableScrollPhysics(), 
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 itemCount: cartItems.length,
                 itemBuilder: (context, index) {
                   final cartItem = cartItems[index];
@@ -72,6 +78,41 @@ class PaymentPage extends ConsumerWidget {
                 },
               ),
             ),
+
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              margin: const EdgeInsets.only(top: 16, bottom: 8),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 222, 230, 236),
+                border: Border.all(color: Colors.white),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  value: selectedCoupon == '쿠폰 선택' ? null : selectedCoupon,
+                  hint: const Text('쿠폰 선택'),
+                  items:
+                      <String>[
+                        '쿠폰선택',
+                        '가입 기념 1000원 할인',
+                        '가입 기념 2000원 할인',
+                        '가입 기념 3000원 할인',
+                        '가입 기념 5000원 할인',
+                      ].map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                  onChanged: (String? newValue) {
+                    ref.read(couponProvider.notifier).state = newValue!;
+                  },
+                ),
+              ),
+            ),
+
             SizedBox(height: 16),
             Text(
               "최종 결제 금액",
@@ -87,13 +128,15 @@ class PaymentPage extends ConsumerWidget {
             ),
             _buildPriceRow("배송비", "0원"),
             _buildPriceRow("쿠팡캐시", "- 0원"),
+            _buildPriceRow(
+              "쿠폰 할인",
+              "-${NumberFormat("#,###원", "ko_KR").format(discount)}",
+            ),
+
             Divider(),
             _buildPriceRow(
               "총 결제 금액",
-              NumberFormat(
-                "#,###원",
-                "ko_KR",
-              ).format(ref.watch(cartProvider.notifier).totalPrice),
+              NumberFormat("#,###원", "ko_KR").format(finalPrice),
               isBold: true,
             ),
             SizedBox(height: 16),
@@ -117,7 +160,11 @@ class PaymentPage extends ConsumerWidget {
                 },
                 child: Text(
                   "결제하기",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.white),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
@@ -188,10 +235,7 @@ class PaymentPage extends ConsumerWidget {
             ),
             TextButton(
               onPressed: () {
-                Navigator.popUntil(
-                  context,
-                  (route) => route.isFirst,
-                ); 
+                Navigator.popUntil(context, (route) => route.isFirst);
               },
               child: Text("홈으로 가기", style: TextStyle(color: Colors.blue)),
             ),
@@ -199,5 +243,20 @@ class PaymentPage extends ConsumerWidget {
         );
       },
     );
+  }
+
+  int _getCouponDiscount(String coupon) {
+    switch (coupon) {
+      case '가입 기념 1000원 할인':
+        return 1000;
+      case '가입 기념 2000원 할인':
+        return 2000;
+      case '가입 기념 3000원 할인':
+        return 3000;
+      case '가입 기념 5000원 할인':
+        return 5000;
+      default:
+        return 0;
+    }
   }
 }
