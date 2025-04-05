@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../components/custom_app_bar.dart';
@@ -29,17 +28,20 @@ class ItemDetailPage extends ConsumerWidget {
             item_type: ItemType.None,
           ),
     );
+    // 카운트용 프로바이더
+    final count = ref.watch(countProvider);
 
     return Scaffold(
       appBar: CustomAppBar(title: item.name),
-      body: Container(
-        padding: EdgeInsets.all(16),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             item.imageFile != null
                 ? Image.file(
                   item.imageFile!,
-                  height: 250,
+                  height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 )
@@ -50,78 +52,167 @@ class ItemDetailPage extends ConsumerWidget {
                 ),
             SizedBox(height: 10),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(item.name, style: TextStyle(fontSize: 30)),
-                    Text(
-                      '${NumberFormat("#,###", "ko_KR").format(item.price)}원',
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red[800],
-                      ),
-                    ),
-                  ],
-                ),
-                Spacer(),
-                Container(
-                  padding: EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    border: Border.all()
-                  ),
-                  child: Row(
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 30),
-                        child: Text('0',
-                          style: TextStyle(
-                            fontSize: 25
-                          ),
+                      Text(
+                        item.name,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Column(
-                        children: [
-                          Icon(Icons.keyboard_arrow_up,
-                            size: 30,
-                          ),
-                          Icon(Icons.keyboard_arrow_down,
-                            size: 30,
-                          ),
-                        ],
+                      Text(
+                        '${NumberFormat("#,###", "ko_KR").format(item.price)}원',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red[800],
+                        ),
                       ),
                     ],
                   ),
                 ),
+                Column(
+                  children: [
+                    SizedBox(height: 10),
+                    Container(
+                      width: 100,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade700),
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                '$count',
+                                style: TextStyle(fontSize: 22),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade600),
+                            ),
+                            child: Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    ref.read(countProvider.notifier).state++;
+                                  },
+                                  child: Icon(
+                                    Icons.keyboard_arrow_up,
+                                    size: 22,
+                                  ),
+                                ),
+                                Container(
+                                  color: Colors.grey[500],
+                                  width: 30,
+                                  height: 1,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    if (count > 0) {
+                                      ref.read(countProvider.notifier).state--;
+                                    }
+                                  },
+                                  child: Icon(
+                                    Icons.keyboard_arrow_down,
+                                    color: Colors.grey[600],
+                                    size: 22,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
-
-            Spacer(),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  _showQuantityDialog(context, item, ref);
-                  //_showQuantityDialog 거치지 않고 바로 장바구니에 추가
-                },
-                child: Text(
-                  '장바니에 추가',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                ),
-              ),
-            ),
+            const SizedBox(height: 20),
+            Text(item.description, style: const TextStyle(fontSize: 18)),
           ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.all(16),
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () {
+            ref.watch(cartProvider.notifier).addToCart(item, count);
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  title: Column(
+                    children: [
+                      Icon(Icons.check_circle, color: Colors.green, size: 60),
+                      SizedBox(height: 10),
+                      Text(
+                        "상품이 장바구니에 담겼습니다.",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  content: Text(
+                    "주문 상세 내역은 장바구니에서 확인할 수 있습니다.",
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("확인", style: TextStyle(color: Colors.black)),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CartItemPage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "장바구니로 가기",
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          child: Text(
+            "장바구니 담기",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue,
+            padding: EdgeInsets.symmetric(vertical: 16),
+          ),
         ),
       ),
     );
@@ -135,12 +226,12 @@ class ItemDetailPage extends ConsumerWidget {
       context: context,
       builder: (context) {
         return CupertinoAlertDialog(
-          title: Text('장바구니에 추가할 수량을 입력하세요'),
+          title: const Text('장바구니에 추가할 수량을 입력하세요'),
           content: CupertinoTextField(
             controller: quantityController,
             keyboardType: TextInputType.number,
             placeholder: '수량 입력',
-            padding: EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
           ),
           actions: [
             CupertinoDialogAction(
@@ -148,7 +239,7 @@ class ItemDetailPage extends ConsumerWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('취소'),
+              child: const Text('취소'),
             ),
             CupertinoDialogAction(
               isDefaultAction: true,
@@ -158,7 +249,7 @@ class ItemDetailPage extends ConsumerWidget {
                 Navigator.of(context).pop(); // 다이얼로그 닫기
                 _addCartDialog(context); // 장바구니 이동 확인 다이얼로그 띄우기
               },
-              child: Text('추가'),
+              child: const Text('추가'),
             ),
           ],
         );
@@ -177,7 +268,7 @@ class ItemDetailPage extends ConsumerWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           title: Column(
-            children: [
+            children: const [
               Icon(Icons.shopping_cart, color: Colors.green, size: 60),
               SizedBox(height: 10),
               Text(
@@ -186,7 +277,7 @@ class ItemDetailPage extends ConsumerWidget {
               ),
             ],
           ),
-          content: Text(
+          content: const Text(
             "장바구니에 해당 품목이 담겼습니다.",
             style: TextStyle(fontSize: 14, color: Colors.grey),
           ),
@@ -195,18 +286,19 @@ class ItemDetailPage extends ConsumerWidget {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text("확인", style: TextStyle(color: Colors.black)),
+              child: const Text("확인", style: TextStyle(color: Colors.black)),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
                 Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const CartItemPage(),
-                  ), // 장바구니로 이동
+                  MaterialPageRoute(builder: (context) => const CartItemPage()),
                 );
               },
-              child: Text("장바구니 이동", style: TextStyle(color: Colors.blue)),
+              child: const Text(
+                "장바구니 이동",
+                style: TextStyle(color: Colors.blue),
+              ),
             ),
           ],
         );
