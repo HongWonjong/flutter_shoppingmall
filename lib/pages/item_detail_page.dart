@@ -24,15 +24,14 @@ class _ItemDetailPageState extends ConsumerState<ItemDetailPage> {
     final items = ref.watch(itemListProvider);
     final item = items.firstWhere(
       (item) => item.id == widget.itemId,
-      orElse:
-          () => Item(
-            id: '',
-            name: '아이템 없음',
-            company_name: "이름 없음",
-            price: 0.0,
-            description: '해당 아이템을 찾을 수 없습니다.',
-            item_type: ItemType.None,
-          ),
+      orElse: () => Item(
+        id: '',
+        name: '아이템 없음',
+        company_name: "이름 없음",
+        price: 0.0,
+        description: '해당 아이템을 찾을 수 없습니다.',
+        item_type: ItemType.None,
+      ),
     );
 
     return Scaffold(
@@ -44,16 +43,16 @@ class _ItemDetailPageState extends ConsumerState<ItemDetailPage> {
           children: [
             item.imageFile != null
                 ? Image.file(
-                  item.imageFile!,
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                )
+                    item.imageFile!,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  )
                 : Container(
-                  height: 200,
-                  color: Colors.grey[300],
-                  child: const Center(child: Text('이미지 없음')),
-                ),
+                    height: 200,
+                    color: Colors.grey[300],
+                    child: const Center(child: Text('이미지 없음')),
+                  ),
             SizedBox(height: 10),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +86,6 @@ class _ItemDetailPageState extends ConsumerState<ItemDetailPage> {
                       width: 100,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey.shade700),
-                        borderRadius: BorderRadius.circular(0),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,10 +111,7 @@ class _ItemDetailPageState extends ConsumerState<ItemDetailPage> {
                                       count++;
                                     });
                                   },
-                                  child: Icon(
-                                    Icons.keyboard_arrow_up,
-                                    size: 22,
-                                  ),
+                                  child: Icon(Icons.keyboard_arrow_up, size: 22),
                                 ),
                                 Container(
                                   color: Colors.grey[500],
@@ -127,14 +122,14 @@ class _ItemDetailPageState extends ConsumerState<ItemDetailPage> {
                                   onTap: () {
                                     if (count > 1) {
                                       setState(() {
-                                      count--;
-                                    });
+                                        count--;
+                                      });
                                     }
                                   },
                                   child: Icon(
                                     Icons.keyboard_arrow_down,
-                                    color: Colors.grey[600],
                                     size: 22,
+                                    color: Colors.grey[600],
                                   ),
                                 ),
                               ],
@@ -149,6 +144,74 @@ class _ItemDetailPageState extends ConsumerState<ItemDetailPage> {
             ),
             const SizedBox(height: 20),
             Text(item.description, style: const TextStyle(fontSize: 18)),
+
+            // 👇 여기부터 추천 상품 리스트 추가
+            SizedBox(height: 20),
+            Text(
+              '이런 상품은 어때요?',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            SizedBox(
+              height: 160,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: items
+                    .where((i) =>
+                        i.item_type == item.item_type && i.id != item.id)
+                    .map((relatedItem) {
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              ItemDetailPage(itemId: relatedItem.id),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 120,
+                      margin: EdgeInsets.only(right: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          relatedItem.imageFile != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.file(
+                                    relatedItem.imageFile!,
+                                    width: 120,
+                                    height: 90,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : Container(
+                                  width: 120,
+                                  height: 90,
+                                  color: Colors.grey[300],
+                                  child: Center(child: Text('이미지 없음')),
+                                ),
+                          SizedBox(height: 8),
+                          Text(
+                            relatedItem.name,
+                            style: TextStyle(fontSize: 14),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          Text(
+                            '${NumberFormat("#,###", "ko_KR").format(relatedItem.price)}원',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red[700]),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+            // 👆 추천 상품 리스트 끝
           ],
         ),
       ),
