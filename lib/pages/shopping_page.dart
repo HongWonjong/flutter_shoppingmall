@@ -52,7 +52,7 @@ class ShoppingPage extends ConsumerWidget {
           height: 38,
           child: Row(
             children: [
-              // 🔹 상품 카테고리 선택 드롭다운
+              // 상품 카테고리 선택 드롭다운
               DropdownButton<String>(
                 alignment: Alignment.centerRight,
                 value: selectedType,
@@ -70,8 +70,8 @@ class ShoppingPage extends ConsumerWidget {
                   }
                 },
               ),
-              const SizedBox(width: 10), // 드롭다운과 검색창 사이 간격 조정
-              // 🔹 검색창 (남은 공간을 모두 차지하도록 `Expanded` 적용)
+              const SizedBox(width: 10),
+              // 검색창 (남은 공간을 모두 차지하도록 `Expanded` 적용)
               Expanded(
                 child: TextField(
                   onChanged: (value) {
@@ -147,8 +147,8 @@ class ShoppingPage extends ConsumerWidget {
                 children: [
                   if (item.imageFile != null)
                     SizedBox(
-                      width: 190,
-                      height: 190,
+                      width: 170,
+                      height: 170,
                       child: Image.file(item.imageFile!, fit: BoxFit.cover),
                     )
                   else
@@ -156,18 +156,20 @@ class ShoppingPage extends ConsumerWidget {
                   const SizedBox(width: 16),
                   Expanded(
                     child: SizedBox(
-                      height: 185,
+                      height: 165,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(item.name, style: TextStyle(fontSize: 20)),
+                          Text(item.name, style: TextStyle(fontSize: 18),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           Text(
                             item.price == 0
                                 ? '무료'
                                 : '${NumberFormat("#,###", "ko_KR").format(item.price)}원',
                             style: TextStyle(
-                              fontSize: 25,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

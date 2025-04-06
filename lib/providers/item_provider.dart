@@ -130,3 +130,4 @@ class ItemListNotifier extends StateNotifier<List<Item>> {
     state = state.where((item) => item.id != id).toList();
   }
 }
+final couponProvider = StateProvider<String>((ref) => '쿠폰 선택');

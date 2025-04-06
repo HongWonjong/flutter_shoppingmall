@@ -51,7 +51,14 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
       // itemProvider의 addItem 메서드가 ItemType을 받도록 가정하고 수정 필요
       ref
           .read(itemListProvider.notifier)
-          .addItem(name, companyName, price, description, _selectedImage, _selectedItemType!);
+          .addItem(
+            name,
+            companyName,
+            price,
+            description,
+            _selectedImage,
+            _selectedItemType!,
+          );
 
       Navigator.pop(context);
     }
@@ -61,73 +68,77 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(title: '상품 등록'),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView( // 스크롤 가능하도록 추가
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: Container(
-                    height: 200,
-                    margin: EdgeInsets.only(top: 5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Colors.grey[300],
-                    ),
-                    child: _selectedImage != null
-                        ? Image.file(
-                      _selectedImage!,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    )
-                        : const Center(child: Text('이미지 선택')),
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          // 스크롤 가능하도록 추가
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: _pickImage,
+                child: Container(
+                  height: 200,
+                  margin: EdgeInsets.only(top: 5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.grey[300],
                   ),
+                  child:
+                      _selectedImage != null
+                          ? Image.file(
+                            _selectedImage!,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          )
+                          : const Center(child: Text('이미지 선택')),
                 ),
-                const SizedBox(height: 16),
-                _buildTextField(_nameController, '상품명', '상품명을 입력해주세요'),
-                const SizedBox(height: 20),
-                _buildTextField(_companyNameController, '회사명', '회사명을 입력해주세요'),
-                const SizedBox(height: 20),
-                _buildTextField(
-                  _priceController,
-                  '가격',
-                  '가격을 입력해주세요',
-                  keyboardType: TextInputType.number,
-                  isNumeric: true,
-                ),
-                const SizedBox(height: 20),
-                _buildTextField(
-                  _descriptionController,
-                  '상품 설명',
-                  '상품 설명을 입력해주세요',
-                  maxLines: 4,
-                ),
-                const SizedBox(height: 20),
-                _buildDropdown(), // ItemType 선택 드롭다운 추가
-                const SizedBox(height: 32),
-                Align(
-                  alignment: Alignment.bottomCenter,
+              ),
+              const SizedBox(height: 16),
+              _buildTextField(_nameController, '상품명', '상품명을 입력해주세요'),
+              const SizedBox(height: 20),
+              _buildTextField(_companyNameController, '회사명', '회사명을 입력해주세요'),
+              const SizedBox(height: 20),
+              _buildTextField(
+                _priceController,
+                '가격',
+                '가격을 입력해주세요',
+                keyboardType: TextInputType.number,
+                isNumeric: true,
+              ),
+              const SizedBox(height: 20),
+              _buildTextField(
+                _descriptionController,
+                '상품 설명',
+                '상품 설명을 입력해주세요',
+                maxLines: 4,
+              ),
+              const SizedBox(height: 20),
+              _buildDropdown(), // ItemType 선택 드롭다운 추가
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: _submit,
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 56),
-                      backgroundColor: Color(0xFF4D81F0),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                    onPressed: () {
+                      _submit(); // 결제 완료 팝업 띄우기
+                    },
+                    child: Text(
+                      "등록하기",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                    child: const Text(
-                      '등록하기',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: EdgeInsets.symmetric(vertical: 16),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -135,65 +146,70 @@ class _CreateItemPageState extends ConsumerState<CreateItemPage> {
   }
 
   Widget _buildTextField(
-      TextEditingController controller,
-      String label,
-      String errorText, {
-        int maxLines = 1,
-        TextInputType keyboardType = TextInputType.text,
-        bool isNumeric = false,
-      }) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        alignLabelWithHint: true,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+    TextEditingController controller,
+    String label,
+    String errorText, {
+    int maxLines = 1,
+    TextInputType keyboardType = TextInputType.text,
+    bool isNumeric = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          alignLabelWithHint: true,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+        maxLines: maxLines,
+        keyboardType: keyboardType,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return errorText;
+          }
+          if (isNumeric && double.tryParse(value) == null) {
+            return '숫자만 입력 가능합니다';
+          }
+          return null;
+        },
       ),
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return errorText;
-        }
-        if (isNumeric && double.tryParse(value) == null) {
-          return '숫자만 입력 가능합니다';
-        }
-        return null;
-      },
     );
   }
 
   Widget _buildDropdown() {
-    return DropdownButtonFormField<ItemType?>(
-      value: _selectedItemType,
-      decoration: InputDecoration(
-        labelText: '아이템 타입',
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      ),
-      items: [
-        const DropdownMenuItem<ItemType?>(
-          value: null,
-          child: Text('선택 안 함'),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: DropdownButtonFormField<ItemType?>(
+        value: _selectedItemType,
+        decoration: InputDecoration(
+          labelText: '아이템 타입',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         ),
-        ...ItemType.values.map((type) => DropdownMenuItem<ItemType>(
-          value: type,
-          child: Text(
-            type == ItemType.food
-                ? '식품'
-                : type == ItemType.clothing
-                ? '의류'
-                : type == ItemType.appliance
-                ? '가전제품'
-                : '기타'
+        items: [
+          const DropdownMenuItem<ItemType?>(value: null, child: Text('선택 안 함')),
+          ...ItemType.values.map(
+            (type) => DropdownMenuItem<ItemType>(
+              value: type,
+              child: Text(
+                type == ItemType.food
+                    ? '식품'
+                    : type == ItemType.clothing
+                    ? '의류'
+                    : type == ItemType.appliance
+                    ? '가전제품'
+                    : '기타',
+              ),
+            ),
           ),
-        )),
-      ],
-      onChanged: (value) {
-        setState(() {
-          _selectedItemType = value;
-        });
-      },
-      validator: (value) => null, // 필수 입력이 아니므로 null 허용
+        ],
+        onChanged: (value) {
+          setState(() {
+            _selectedItemType = value;
+          });
+        },
+        validator: (value) => null, // 필수 입력이 아니므로 null 허용
+      ),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/item.dart';
 import '../models/cart_item.dart';
 
+
 //카트 프로바이더는 카트 아이템 리스트를 관리하는 카트 노티파이어를 전역적으로 사용 가능하게 한다.
 final cartProvider = StateNotifierProvider<CartNotifier, List<CartItem>>((ref) {
   return CartNotifier();
