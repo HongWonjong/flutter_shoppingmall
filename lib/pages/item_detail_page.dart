@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../components/custom_app_bar.dart';
 import '../models/item.dart';
+import '../models/cart_item.dart';
 import '../providers/cart_provider.dart';
 import '../providers/item_provider.dart';
 import '../pages/cart_item_page.dart';
+import '../pages/payment_page.dart';
 
 class ItemDetailPage extends ConsumerStatefulWidget {
   final String itemId;
@@ -18,7 +20,7 @@ class ItemDetailPage extends ConsumerStatefulWidget {
 
 class _ItemDetailPageState extends ConsumerState<ItemDetailPage> {
   int count = 1;
-  
+
   @override
   Widget build(BuildContext context) {
     final items = ref.watch(itemListProvider);
@@ -145,7 +147,6 @@ class _ItemDetailPageState extends ConsumerState<ItemDetailPage> {
             const SizedBox(height: 20),
             Text(item.description, style: const TextStyle(fontSize: 18)),
 
-            // 👇 여기부터 추천 상품 리스트 추가
             SizedBox(height: 20),
             Text(
               '이런 상품은 어때요?',
@@ -211,79 +212,114 @@ class _ItemDetailPageState extends ConsumerState<ItemDetailPage> {
                 }).toList(),
               ),
             ),
-            // 👆 추천 상품 리스트 끝
           ],
         ),
       ),
       bottomNavigationBar: Container(
         padding: EdgeInsets.all(16),
         width: double.infinity,
-        child: ElevatedButton(
-          onPressed: () {
-            ref.watch(cartProvider.notifier).addToCart(item, count);
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  title: Column(
-                    children: [
-                      Icon(Icons.check_circle, color: Colors.green, size: 60),
-                      SizedBox(height: 10),
-                      Text(
-                        "상품이 장바구니에 담겼습니다.",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  ref.watch(cartProvider.notifier).addToCart(item, count);
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ),
-                    ],
-                  ),
-                  content: Text(
-                    "주문 상세 내역은 장바구니에서 확인할 수 있습니다.",
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text("확인", style: TextStyle(color: Colors.black)),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => CartItemPage(),
+                        title: Column(
+                          children: [
+                            Icon(Icons.check_circle,
+                                color: Colors.green, size: 60),
+                            SizedBox(height: 10),
+                            Text(
+                              "상품이 장바구니에 담겼습니다.",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        content: Text(
+                          "주문 상세 내역은 장바구니에서 확인할 수 있습니다.",
+                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text("확인",
+                                style: TextStyle(color: Colors.black)),
                           ),
-                        );
-                      },
-                      child: Text(
-                        "장바구니로 가기",
-                        style: TextStyle(color: Colors.blue),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CartItemPage(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              "장바구니로 가기",
+                              style: TextStyle(color: Colors.blue),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(
+                  "장바구니 담기",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PaymentPage(
+                        isDirectBuy: true,
+                        directBuyItem: CartItem(item: item, quantity: count),
                       ),
                     ),
-                  ],
-                );
-              },
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blue,
-            padding: EdgeInsets.symmetric(vertical: 16),
-          ),
-          child: Text(
-            "장바구니 담기",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: Text(
+                  "바로 구매하기",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

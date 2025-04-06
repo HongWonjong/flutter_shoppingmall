@@ -3,20 +3,31 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../providers/cart_provider.dart';
 import '../providers/item_provider.dart';
-
-
+import '../models/cart_item.dart'; // 필요 시 직접 경로 수정
 
 class PaymentPage extends ConsumerWidget {
-  const PaymentPage({super.key});
+  final bool isDirectBuy;
+  final CartItem? directBuyItem;
+
+  const PaymentPage({
+    super.key,
+    this.isDirectBuy = false,
+    this.directBuyItem,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cartItems = ref.watch(cartProvider);
+    final cartItems = isDirectBuy && directBuyItem != null
+        ? [directBuyItem!]
+        : ref.watch(cartProvider);
+
     final selectedCoupon = ref.watch(couponProvider);
-    final totalPrice = ref.watch(cartProvider.notifier).totalPrice;
+    final totalPrice = isDirectBuy && directBuyItem != null
+        ? directBuyItem!.item.price * directBuyItem!.quantity
+        : ref.watch(cartProvider.notifier).totalPrice;
+
     final discount = _getCouponDiscount(selectedCoupon);
-    final finalPrice =
-        (totalPrice - discount).clamp(0, double.infinity).toInt();
+    final finalPrice = (totalPrice - discount).clamp(0, double.infinity).toInt();
 
     return Scaffold(
       appBar: AppBar(
@@ -29,7 +40,7 @@ class PaymentPage extends ConsumerWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context); // 뒤로 가기
+            Navigator.pop(context);
           },
         ),
       ),
@@ -56,15 +67,14 @@ class PaymentPage extends ConsumerWidget {
                 itemBuilder: (context, index) {
                   final cartItem = cartItems[index];
                   return ListTile(
-                    leading:
-                        cartItem.item.imageFile != null
-                            ? Image.file(
-                              cartItem.item.imageFile!,
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            )
-                            : const Icon(Icons.image, size: 50),
+                    leading: cartItem.item.imageFile != null
+                        ? Image.file(
+                            cartItem.item.imageFile!,
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                          )
+                        : const Icon(Icons.image, size: 50),
                     title: Text(cartItem.item.name),
                     subtitle: Text(
                       '가격: ${NumberFormat("#,###", "ko_KR").format(cartItem.item.price * cartItem.quantity)}원',
@@ -77,7 +87,6 @@ class PaymentPage extends ConsumerWidget {
                 },
               ),
             ),
-
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -92,26 +101,24 @@ class PaymentPage extends ConsumerWidget {
                   isExpanded: true,
                   value: selectedCoupon == '쿠폰 선택' ? null : selectedCoupon,
                   hint: const Text('쿠폰 선택'),
-                  items:
-                      <String>[
-                        '쿠폰선택',
-                        '가입 기념 1000원 할인',
-                        '가입 기념 2000원 할인',
-                        '가입 기념 3000원 할인',
-                        '가입 기념 5000원 할인',
-                      ].map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
+                  items: <String>[
+                    '쿠폰선택',
+                    '가입 기념 1000원 할인',
+                    '가입 기념 2000원 할인',
+                    '가입 기념 3000원 할인',
+                    '가입 기념 5000원 할인',
+                  ].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
                   onChanged: (String? newValue) {
                     ref.read(couponProvider.notifier).state = newValue!;
                   },
                 ),
               ),
             ),
-
             SizedBox(height: 16),
             Text(
               "최종 결제 금액",
@@ -120,10 +127,7 @@ class PaymentPage extends ConsumerWidget {
             SizedBox(height: 8),
             _buildPriceRow(
               "총 상품 가격",
-              NumberFormat(
-                "#,###원",
-                "ko_KR",
-              ).format(ref.watch(cartProvider.notifier).totalPrice),
+              NumberFormat("#,###원", "ko_KR").format(totalPrice),
             ),
             _buildPriceRow("배송비", "0원"),
             _buildPriceRow("쿠팡캐시", "- 0원"),
@@ -131,7 +135,6 @@ class PaymentPage extends ConsumerWidget {
               "쿠폰 할인",
               "-${NumberFormat("#,###원", "ko_KR").format(discount)}",
             ),
-
             Divider(),
             _buildPriceRow(
               "총 결제 금액",
@@ -155,16 +158,15 @@ class PaymentPage extends ConsumerWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  _showPaymentSuccessDialog(context); // 결제 완료 팝업 띄우기
+                  _showPaymentSuccessDialog(context);
                 },
-
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   padding: EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: Text(
                   "결제하기",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.white),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
                 ),
               ),
             ),
