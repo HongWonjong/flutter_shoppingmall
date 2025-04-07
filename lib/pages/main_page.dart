@@ -27,11 +27,12 @@ class MainPage extends ConsumerWidget {
         children: [
           // 메인 컨텐츠
           Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.network(
                 'https://i.imgur.com/baFkWzl.png',
                 width: 500,
-                height: 200,
+                height: 150,
               ),
               Container(
                 height: 100,
@@ -39,7 +40,7 @@ class MainPage extends ConsumerWidget {
                 child: const SearchTextField(),
               ),
               PromoteSlider(),
-              SizedBox(height: 50,),
+              SizedBox(height: 30,),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(200, 120),
