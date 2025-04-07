@@ -260,6 +260,7 @@ class _ItemDetailPageState extends ConsumerState<ItemDetailPage> {
                           ),
                           TextButton(
                             onPressed: () {
+                              Navigator.of(context, rootNavigator: true).pop();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
