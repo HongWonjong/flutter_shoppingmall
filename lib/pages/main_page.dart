@@ -109,7 +109,7 @@ class MainPage extends ConsumerWidget {
           // 검색 결과 (Stack으로 오버레이)
           if (searchQuery.isNotEmpty && searchResults.isNotEmpty)
             Positioned(
-              top: 300, // 이미지 높이와 동일하게 설정하여 검색창 바로 아래에 위치
+              top: 300,
               left: 16,
               right: 16,
               child: Material(
@@ -118,7 +118,7 @@ class MainPage extends ConsumerWidget {
                 child: Container(
                   constraints: const BoxConstraints(maxHeight: 200),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.95), // 반투명 흰색 배경
+                    color: Colors.white.withOpacity(0.95),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: ListView.builder(
@@ -145,7 +145,9 @@ class MainPage extends ConsumerWidget {
                             MaterialPageRoute(
                               builder: (context) => ItemDetailPage(itemId: item.id),
                             ),
-                          );
+                          ).then((_) {
+                            ref.read(searchQueryProvider.notifier).state = '';
+                          });
                         },
                       );
                     },
