@@ -1,41 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_shippingmall/components/search_text_field.dart';
 import 'package:flutter_shippingmall/function/get_item_type_text.dart';
 import 'package:flutter_shippingmall/pages/cart_item_page.dart';
+import '../providers/filtered_item_list_provider.dart';
 import '../providers/item_provider.dart';
+import '../providers/item_type_provider.dart';
+import '../providers/search_query_provider.dart';
 import 'item_detail_page.dart';
 import 'package:intl/intl.dart';
-
-// 검색어 상태 관리
-final searchQueryProvider = StateProvider<String>((ref) => "");
-
-// 선택된 상품 타입을 관리할 Provider
-final itemTypeProvider = StateProvider<String>((ref) => "전체"); // 기본값: 전체
-
-// 검색어 및 상품 타입을 반영한 필터링된 아이템 리스트 Provider
-final filteredItemListProvider = Provider((ref) {
-  final query = ref.watch(searchQueryProvider).toLowerCase(); // 검색어 가져오기
-  final selectedType = ref.watch(itemTypeProvider); // 선택된 상품 타입 가져오기
-  final items = ref.watch(itemListProvider); // 전체 아이템 목록 가져오기
-
-  // 검색어 필터링
-  var filteredItems =
-      query.isEmpty
-          ? items
-          : items
-              .where((item) => item.name.toLowerCase().contains(query))
-              .toList();
-
-  // 상품 타입 필터링 (전체 선택 시 모든 상품 포함)
-  if (selectedType != "전체") {
-    filteredItems =
-        filteredItems.where((item) {
-          final itemType = getItemTypeText(item); // 상품 타입 가져오기
-          return itemType == selectedType; // 필터링 조건 적용
-        }).toList();
-  }
-  return filteredItems;
-});
 
 class ShoppingPage extends ConsumerWidget {
   const ShoppingPage({super.key});
@@ -72,32 +45,7 @@ class ShoppingPage extends ConsumerWidget {
               ),
               const SizedBox(width: 10),
               // 검색창 (남은 공간을 모두 차지하도록 `Expanded` 적용)
-              Expanded(
-                child: TextField(
-                  onChanged: (value) {
-                    ref.read(searchQueryProvider.notifier).state =
-                        value; // 검색어 변경 시 상태 업데이트
-                  },
-                  textAlignVertical: TextAlignVertical.bottom,
-                  decoration: InputDecoration(
-                    suffixIcon: Icon(Icons.search),
-                    hintText: '찾고 싶은 상품을 검색해보세요!',
-                    border: OutlineInputBorder(),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFF4D81F0),
-                        width: 3,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xFF4D81F0),
-                        width: 3,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              SearchTextField(),
             ],
           ),
         ),
