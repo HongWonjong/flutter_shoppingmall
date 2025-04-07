@@ -39,6 +39,7 @@ class MainPage extends ConsumerWidget {
                 child: const SearchTextField(),
               ),
               PromoteSlider(),
+              SizedBox(height: 50,),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(200, 120),
