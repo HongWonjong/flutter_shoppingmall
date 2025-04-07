@@ -44,133 +44,135 @@ class PaymentPage extends ConsumerWidget {
           },
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "배송 1건",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(8),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "배송 1건",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              padding: EdgeInsets.all(12),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: cartItems.length,
-                itemBuilder: (context, index) {
-                  final cartItem = cartItems[index];
-                  return ListTile(
-                    leading: cartItem.item.imageFile != null
-                        ? Image.file(
-                            cartItem.item.imageFile!,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          )
-                        : const Icon(Icons.image, size: 50),
-                    title: Text(cartItem.item.name),
-                    subtitle: Text(
-                      '가격: ${NumberFormat("#,###", "ko_KR").format(cartItem.item.price * cartItem.quantity)}원',
-                    ),
-                    trailing: Text(
-                      '수량: ${cartItem.quantity}',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  );
-                },
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              margin: const EdgeInsets.only(top: 16, bottom: 8),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 222, 230, 236),
-                border: Border.all(color: Colors.white),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  value: selectedCoupon == '쿠폰 선택' ? null : selectedCoupon,
-                  hint: const Text('쿠폰 선택'),
-                  items: <String>[
-                    '쿠폰선택',
-                    '가입 기념 1000원 할인',
-                    '가입 기념 2000원 할인',
-                    '가입 기념 3000원 할인',
-                    '가입 기념 5000원 할인',
-                  ].map((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
+              SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                padding: EdgeInsets.all(12),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  //physics: NeverScrollableScrollPhysics(),
+                  itemCount: cartItems.length,
+                  itemBuilder: (context, index) {
+                    final cartItem = cartItems[index];
+                    return ListTile(
+                      leading: cartItem.item.imageFile != null
+                          ? Image.file(
+                              cartItem.item.imageFile!,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            )
+                          : const Icon(Icons.image, size: 50),
+                      title: Text(cartItem.item.name),
+                      subtitle: Text(
+                        '가격: ${NumberFormat("#,###", "ko_KR").format(cartItem.item.price * cartItem.quantity)}원',
+                      ),
+                      trailing: Text(
+                        '수량: ${cartItem.quantity}',
+                        style: TextStyle(fontSize: 14),
+                      ),
                     );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    ref.read(couponProvider.notifier).state = newValue!;
                   },
                 ),
               ),
-            ),
-            SizedBox(height: 16),
-            Text(
-              "최종 결제 금액",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            _buildPriceRow(
-              "총 상품 가격",
-              NumberFormat("#,###원", "ko_KR").format(totalPrice),
-            ),
-            _buildPriceRow("배송비", "0원"),
-            _buildPriceRow("쿠팡캐시", "- 0원"),
-            _buildPriceRow(
-              "쿠폰 할인",
-              "-${NumberFormat("#,###원", "ko_KR").format(discount)}",
-            ),
-            Divider(),
-            _buildPriceRow(
-              "총 결제 금액",
-              NumberFormat("#,###원", "ko_KR").format(finalPrice),
-              isBold: true,
-            ),
-            SizedBox(height: 16),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.blue[50],
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            Spacer(),
-            Text(
-              "개인정보 제3자 제공 동의\n* 개별 판매자가 등록한 마켓플레이스(오픈마켓) 상품에 대한 광고, 주문, 배송 및 환불의 책임은 각 판매자가 부담합니다.",
-              style: TextStyle(fontSize: 12, color: Colors.grey),
-            ),
-            SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  _showPaymentSuccessDialog(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(vertical: 16),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                margin: const EdgeInsets.only(top: 16, bottom: 8),
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 222, 230, 236),
+                  border: Border.all(color: Colors.white),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
-                  "결제하기",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    isExpanded: true,
+                    value: selectedCoupon == '쿠폰 선택' ? null : selectedCoupon,
+                    hint: const Text('쿠폰 선택'),
+                    items: <String>[
+                      '쿠폰선택',
+                      '가입 기념 1000원 할인',
+                      '가입 기념 2000원 할인',
+                      '가입 기념 3000원 할인',
+                      '가입 기념 5000원 할인',
+                    ].map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      ref.read(couponProvider.notifier).state = newValue!;
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 16),
+              Text(
+                "최종 결제 금액",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              _buildPriceRow(
+                "총 상품 가격",
+                NumberFormat("#,###원", "ko_KR").format(totalPrice),
+              ),
+              _buildPriceRow("배송비", "0원"),
+              _buildPriceRow("쿠팡캐시", "- 0원"),
+              _buildPriceRow(
+                "쿠폰 할인",
+                "-${NumberFormat("#,###원", "ko_KR").format(discount)}",
+              ),
+              Divider(),
+              _buildPriceRow(
+                "총 결제 금액",
+                NumberFormat("#,###원", "ko_KR").format(finalPrice),
+                isBold: true,
+              ),
+              SizedBox(height: 16),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.blue[50],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              //Spacer(),
+              Text(
+                "개인정보 제3자 제공 동의\n* 개별 판매자가 등록한 마켓플레이스(오픈마켓) 상품에 대한 광고, 주문, 배송 및 환불의 책임은 각 판매자가 부담합니다.",
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+              SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _showPaymentSuccessDialog(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: Text(
+                    "결제하기",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
